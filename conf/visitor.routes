@@ -1,0 +1,4 @@
+GET /                 controllers.Visitors.home()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/visitors/*file               controllers.Assets.at(path="/public/visitors", file)
