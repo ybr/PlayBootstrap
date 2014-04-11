@@ -7,4 +7,6 @@ import play.api.libs.concurrent.Akka
 
 import models._
 
-trait PostgreDAO extends DAO {}
+trait PostgreDAO extends DAO {
+  val unique_violation = "23505"
+}
