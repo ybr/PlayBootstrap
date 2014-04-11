@@ -1,4 +1,9 @@
-GET /                 controllers.Visitors.home()
+GET   /                 controllers.Visitors.home
+
+GET   /signup           controllers.Visitors.signup
+POST  /signup           controllers.Visitors.subscribe
+
+GET   /signin           controllers.Visitors.signin
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/visitors/*file               controllers.Assets.at(path="/public/visitors", file)

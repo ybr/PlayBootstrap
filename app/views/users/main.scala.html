@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html)(implicit flash: Flash)
 
 <!DOCTYPE html>
 
@@ -17,6 +17,9 @@
             </ul>
           </nav>
         </header>
+        @flash.data.toList.map { t =>
+        <div class="flash @t._1">@t._2</div>
+        }
         @content
     </body>
 </html>
