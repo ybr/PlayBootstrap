@@ -6,6 +6,7 @@ import play.api._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 import play.api.i18n._
 
 import play.api.libs.concurrent.Execution.Implicits._
@@ -13,15 +14,15 @@ import play.api.libs.concurrent.Execution.Implicits._
 import models.exceptions._
 
 object Visitors extends Controller {
-  def accountDAO = daos.AccountPostgreDAO
+  def credentials = services.CredentialsService
 
   def home() = Action { implicit request =>
     Ok(views.html.users.home())
   }
 
   val emailPwdForm = Form(tuple(
-    "email" -> email,
-    "password" -> nonEmptyText
+    "email" -> email.verifying(maxLength(255)),
+    "password" -> nonEmptyText(maxLength = 255)
   ))
 
   def signup() = Action { implicit request =>
@@ -33,7 +34,7 @@ object Visitors extends Controller {
       formWithErrors => Future.successful(BadRequest(views.html.users.signup(formWithErrors))),
       signupData => {
         val (email, password) = signupData
-        accountDAO.create(email, password) map { _ =>
+        credentials.create(email, password) map { _ =>
           Redirect(routes.Visitors.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
         } recover {
           case AccountAlreadyExistsException(login, _) =>
