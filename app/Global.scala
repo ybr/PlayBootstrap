@@ -4,9 +4,10 @@ import play.api._
 import play.api.mvc._
 import play.api.mvc.Results._
 
+import models._
+
 object Global extends GlobalSettings {
   override def onError(req: RequestHeader, x: Throwable) = {
-    implicit val flash = Flash()
-    Future.successful(InternalServerError(views.html.users.error()))
+    Future.successful(InternalServerError(views.html.visitors.error()(None, Flash())))
   }
 }

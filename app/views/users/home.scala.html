@@ -1,5 +1,5 @@
-@()(implicit flash: Flash)
+@()(implicit me: User, flash: Flash)
 
-@main("Home") {
-  This is the first page
+@main("My home") {
+  Your first name is @me.firstName
 }

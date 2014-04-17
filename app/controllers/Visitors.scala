@@ -2,6 +2,8 @@ package controllers
 
 import scala.concurrent.Future
 
+import org.joda.time._
+
 import play.api._
 import play.api.mvc._
 import play.api.data._
@@ -11,39 +13,69 @@ import play.api.i18n._
 
 import play.api.libs.concurrent.Execution.Implicits._
 
+import models._
 import models.exceptions._
+import models.requests._
+import utils._
 
-object Visitors extends Controller {
+object Visitors extends UserController {
   def credentials = services.CredentialsService
 
-  def home() = Action { implicit request =>
-    Ok(views.html.users.home())
+  def home() = WithMaybeUser { implicit request =>
+    Ok(views.html.visitors.home())
   }
 
-  val emailPwdForm = Form(tuple(
+  private val signupForm = Form(tuple(
+    "firstname" -> nonEmptyText.verifying(maxLength(255)),
+    "lastname" -> nonEmptyText.verifying(maxLength(255)),
     "email" -> email.verifying(maxLength(255)),
     "password" -> nonEmptyText(maxLength = 255)
   ))
 
-  def signup() = Action { implicit request =>
-    Ok(views.html.users.signup(emailPwdForm))
+  def signup() = WithMaybeUser { implicit request =>
+    Ok(views.html.visitors.signup(signupForm))
   }
 
-  def subscribe() = Action.async { implicit request =>
-    emailPwdForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.users.signup(formWithErrors))),
+  def subscribe() = WithMaybeUser.async { implicit request =>
+    signupForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(views.html.visitors.signup(formWithErrors))),
       signupData => {
-        val (email, password) = signupData
-        credentials.create(email, password) map { _ =>
+        val (firstName, lastName, email, password) = signupData
+        credentials.create(email, password, UserCreate(firstName, lastName, email, DateTime.now)) map { _ =>
           Redirect(routes.Visitors.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
         } recover {
           case AccountAlreadyExistsException(login, _) =>
-            implicit val flash = Flash() + ("error" -> Messages("flash.visitors.alreadyExists", login))
-            BadRequest(views.html.users.signup(emailPwdForm.fill(signupData)))
+            implicit val flash = Flash(Map("error" -> Messages("flash.visitors.alreadyExists", login)))
+            BadRequest(views.html.visitors.signup(signupForm.fill(signupData)))
         }
       }
     )
   }
 
-  def signin() = TODO
+  private val signinForm = Form(tuple(
+    "email" -> email.verifying(maxLength(255)),
+    "password" -> nonEmptyText(maxLength = 255)
+  ))
+
+  def signin() = WithMaybeUser { implicit request =>
+    Ok(views.html.visitors.signin(signinForm))
+  }
+
+  def authenticate() = WithMaybeUser.async { implicit request =>
+    signinForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(views.html.visitors.signin(formWithErrors))),
+      signinData => {
+        val (email, password) = signinData
+        credentials.authenticate(email, password) map { maybeEmail =>
+          maybeEmail match {
+            case Some(email) => Redirect(routes.Users.home).withSession("email" -> email)
+            case None => {
+              implicit val flash = Flash(Map("error" -> Messages("flash.visitors.credentialsUnknown")))
+              Unauthorized(views.html.visitors.signin(signinForm.fill(signinData)))
+            }
+          }
+        }
+      }
+    )
+  }
 }

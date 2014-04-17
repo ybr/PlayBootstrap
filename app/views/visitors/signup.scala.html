@@ -1,0 +1,17 @@
+@(form: Form[(String, String, String, String)])(implicit maybeMe: Option[User], flash: Flash)
+
+@main("Sign up") {
+  <form action="@routes.Visitors.subscribe" method="POST">
+    <fieldset>
+      <legend>Profile</legend>
+      @helper.inputText(form("firstname"))
+      @helper.inputText(form("lastname"))
+    </fieldset>
+    <fieldset>
+      <legend>Credentials</legend>
+      @helper.inputText(form("email"))
+      @helper.inputPassword(form("password"))
+    </fieldset>
+    <button>Sign up</button>
+  </form>
+}

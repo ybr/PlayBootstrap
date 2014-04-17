@@ -19,7 +19,12 @@ class VisitorsSpec extends Specification {
     }
 
     "redirect to signin page if the signup succeeded" in new WithApplication {
-      val response = route(FakeRequest(POST, "/signup").withFormUrlEncodedBody("email" -> "user@domain.com", "password" -> "pwd")).get
+      val response = route(FakeRequest(POST, "/signup").withFormUrlEncodedBody(
+        "firstname" -> "y",
+        "lastname" -> "br",
+        "email" -> "user@domain.com",
+        "password" -> "pwd"
+      )).get
       status(response) must be equalTo(303)
       flash(response).get("success") must beSome
     }

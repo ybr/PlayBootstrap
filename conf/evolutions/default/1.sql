@@ -2,7 +2,7 @@
 
 # --- !Ups
 
-CREATE TABLE credentials(
+CREATE TABLE T_CREDENTIALS(
   id            BIGSERIAL PRIMARY KEY,
   login         VARCHAR(255) NOT NULL,
   password      VARCHAR(88) NOT NULL,
@@ -14,4 +14,4 @@ CREATE TABLE credentials(
 
 # --- !Downs
 
-DROP TABLE credentials;
+DROP TABLE T_CREDENTIALS;

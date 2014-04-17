@@ -1,0 +1,30 @@
+@(title: String)(content: Html)(implicit maybeMe: Option[User], flash: Flash)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+    </head>
+    <body>
+        <header>
+          <nav>
+            <ul>
+              <li class="brand"><a href="@routes.Visitors.home">Home</a></li>
+              @maybeMe.map { me =>
+              <li class="profile"><a href="@routes.Users.home">@me.email</a></li>
+              <li class="signout"><a href="@routes.Users.signout">Sign out</a></li>
+              }.getOrElse {
+              <li class="signin"><a href="@routes.Visitors.signin">Sign in</a></li>
+              }
+            </ul>
+          </nav>
+        </header>
+        @flash.data.toList.map { t =>
+        <div class="flash @t._1">@t._2</div>
+        }
+        @content
+    </body>
+</html>

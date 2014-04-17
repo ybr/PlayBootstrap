@@ -9,16 +9,16 @@ import models.exceptions._
 object CredentialsPostgreDaoSpec extends Specification with DaoSpec {
   "CredentialsPostgreDAO" should {
     "create an account" in new WithInMemoryDB {
-      val login = await(CredentialsPostgreDAO.create("user@domain.com", "pwd", "someSalt"))
-      login must equalTo("user@domain.com")
+      val id = await(CredentialsPostgreDAO.create("user@domain.com", "pwd", "someSalt").commit)
+      id.value > 0 must beTrue
     }
 
     "not create an account when the login already exists" in new WithInMemoryDB {
       await {
-        CredentialsPostgreDAO.create("user@domain.com", "pwd", "someSalt")
+        CredentialsPostgreDAO.create("user@domain.com", "pwd", "someSalt").commit
       }
       await {
-        CredentialsPostgreDAO.create("user@domain.com", "otherPwd", "someOtherSalt")
+        CredentialsPostgreDAO.create("user@domain.com", "otherPwd", "someOtherSalt").commit
       } must throwAn[AccountAlreadyExistsException]
     }
   }
