@@ -3,3 +3,4 @@ password=Password
 
 flash.visitors.subscribe=Your account has been created successfully
 flash.visitors.alreadyExists=This account already exists
+flash.visitors.credentialsUnknown=This account is unknown, please check both your email and password
