@@ -19,7 +19,7 @@ import models.requests._
 import utils._
 
 object Visitors extends UserController {
-  def credentials = services.CredentialsService
+  def userService = services.UserService
 
   def home() = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.home())
@@ -41,7 +41,7 @@ object Visitors extends UserController {
       formWithErrors => Future.successful(BadRequest(views.html.visitors.signup(formWithErrors))),
       signupData => {
         val (firstName, lastName, email, password) = signupData
-        credentials.create(email, password, UserCreate(firstName, lastName, email, DateTime.now)) map { _ =>
+        userService.create(UserCreate(firstName, lastName, email, DateTime.now), email, password) map { _ =>
           Redirect(routes.Visitors.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
         } recover {
           case AccountAlreadyExistsException(login, _) =>
@@ -66,13 +66,11 @@ object Visitors extends UserController {
       formWithErrors => Future.successful(BadRequest(views.html.visitors.signin(formWithErrors))),
       signinData => {
         val (email, password) = signinData
-        credentials.authenticate(email, password) map { maybeEmail =>
-          maybeEmail match {
-            case Some(email) => Redirect(routes.Users.home).withSession("email" -> email)
-            case None => {
-              implicit val flash = Flash(Map("error" -> Messages("flash.visitors.credentialsUnknown")))
-              Unauthorized(views.html.visitors.signin(signinForm.fill(signinData)))
-            }
+        userService.authenticate(email, password) map {
+          case Some(user) => Redirect(routes.Users.home).withSession("login" -> email)
+          case None => {
+            implicit val flash = Flash(Map("error" -> Messages("flash.visitors.credentialsUnknown")))
+            Unauthorized(views.html.visitors.signin(signinForm.fill(signinData)))
           }
         }
       }

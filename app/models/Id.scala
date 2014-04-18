@@ -3,7 +3,7 @@ package models
 import play.api.libs.json._
 
 trait Id {
-  def value: Long
+  def value: String
 }
 
 trait IdProvider[T] {

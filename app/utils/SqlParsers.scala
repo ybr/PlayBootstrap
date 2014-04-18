@@ -8,8 +8,4 @@ import models._
 
 object SqlParsers {
   def id(columnName: String)(implicit provider: IdProvider[Long]) = SqlParser.long(columnName).map(Id(_))
-
-  object joda {
-    def date(columnName: String) = SqlParser.date(columnName).map(new DateTime(_))
-  }
 }

@@ -7,7 +7,7 @@ trait PostgreDAO extends DAO {
 
   implicit val postgreIdProvider = new IdProvider[Long] {
     def toId(l: Long) = new Id {
-      val value = l
+      val value = l.toString
     }
   }
 }

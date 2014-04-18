@@ -8,7 +8,6 @@ CREATE TABLE T_CREDENTIALS(
   password      VARCHAR(88) NOT NULL,
   salt          VARCHAR(36) NOT NULL,
   creation      TIMESTAMP NOT NULL DEFAULT NOW(),
-  modification  TIMESTAMP NOT NULL DEFAULT NOW(),
   CONSTRAINT unique_login UNIQUE(login)
 );
 

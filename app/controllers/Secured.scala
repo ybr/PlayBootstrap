@@ -7,6 +7,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 import models._
 import daos._
+import utils._
 
 class UserRequest[A](val me: User, request: Request[A]) extends WrappedRequest[A](request)
 class MaybeUserRequest[A](val maybeMe: Option[User], request: Request[A]) extends WrappedRequest[A](request)
@@ -19,8 +20,8 @@ trait UserController extends Controller {
     private val userDAO: UserDAO = UserPostgreDAO
 
     def invokeBlock[A](request: Request[A], block: UserRequest[A] => Future[SimpleResult]) = {
-      request.session.get("email") match {
-        case Some(email) => userDAO.byLogin(email).commit flatMap {
+      request.session.get("login") match {
+        case Some(email) => userDAO.byLogin(email) flatMap {
           case Some(user) => block(new UserRequest(user, request))
           case None => Future.successful(Forbidden)
         }
@@ -33,8 +34,8 @@ trait UserController extends Controller {
     private val userDAO: UserDAO = UserPostgreDAO
 
     def invokeBlock[A](request: Request[A], block: MaybeUserRequest[A] => Future[SimpleResult]) = for {
-      maybeEmail <- Future.successful(request.session.get("email"))
-      maybeUser <- maybeEmail.map(email => userDAO.byLogin(email).commit).getOrElse(Future.successful(None))
+      maybeEmail <- Future.successful(request.session.get("login"))
+      maybeUser <- FutureUtils.sequence(maybeEmail.map(email => userDAO.byLogin(email))).map(_.flatten)
       result <- block(new MaybeUserRequest(maybeUser, request))
     } yield result
   }
