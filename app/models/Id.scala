@@ -4,6 +4,7 @@ import play.api.libs.json._
 
 trait Id {
   def value: String
+  override def toString = s"Id(${value})"
 }
 
 trait IdProvider[T] {
