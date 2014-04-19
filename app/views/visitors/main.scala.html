@@ -15,9 +15,9 @@
               <li class="brand"><a href="@routes.Visitors.home">Home</a></li>
               @maybeMe.map { me =>
               <li class="profile"><a href="@routes.Users.home">@me.email</a></li>
-              <li class="signout"><a href="@routes.Users.signout">Sign out</a></li>
+              <li class="signout"><a href="@routes.Authentication.signout">Sign out</a></li>
               }.getOrElse {
-              <li class="signin"><a href="@routes.Visitors.signin">Sign in</a></li>
+              <li class="signin"><a href="@routes.Authentication.signin">Sign in</a></li>
               }
             </ul>
           </nav>

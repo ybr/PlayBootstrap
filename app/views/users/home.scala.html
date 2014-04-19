@@ -1,5 +1,18 @@
 @()(implicit me: User, flash: Flash)
 
 @main("My home") {
-  Your first name is @me.firstName
+  <h1>Your area</h1>
+
+  <section>
+    <h2>Your profile</h2>
+    <dl>
+      <dt>First name</dt>
+      <dd>@{me.firstName}</dd>
+      <dt>Last name</dt>
+      <dd>@{me.lastName}</dd>
+      <dt>Email</dt>
+      <dd>@{me.email}</dd>
+    </dl>
+    <a href="@routes.Users.profile">Modify my profile</a>
+  </section>
 }

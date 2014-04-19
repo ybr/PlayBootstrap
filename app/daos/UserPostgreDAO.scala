@@ -32,7 +32,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
         "login" -> login,
         "password" -> password,
         "salt" -> salt,
-        "creation" -> request.creation.toDate
+        "creation" -> param(request.creation)
       ).executeInsert().map(Id(_)).get
 
       SQL("""
@@ -42,8 +42,8 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
         "firstName" -> request.firstName,
         "lastName" -> request.lastName,
         "email" -> request.email,
-        "creation" -> request.creation.toDate,
-        "credentialsId" -> credentialsId.value.toInt
+        "creation" -> param(request.creation),
+        "credentialsId" -> param(credentialsId)
       ).executeInsert().map(Id(_)).map(request.withId).get
     }
   }.transform(identity, {
@@ -56,6 +56,26 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
       case _ => x
     }
   })
+
+  def update(user: User, request: UserUpdate): Future[User] = Future {
+    DB.withTransaction { implicit c =>
+      SQL("""
+        UPDATE T_USER
+        SET
+          first_name = {firstName},
+          last_name = {lastName},
+          email = {email}
+        WHERE id = {id}
+      """).on(
+        "firstName" -> request.firstName,
+        "lastName" -> request.lastName,
+        "email" -> request.email,
+        "id" -> param(user.id)
+      ).executeUpdate
+    }
+  } flatMap { _ =>
+    byId(user.id).map(_.get)
+  }
 
   def salt(login: String): Future[Option[String]] = Future {
     DB.withTransaction { implicit c =>
@@ -96,6 +116,18 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
         WHERE c.login = {login}
       """).on(
         "login" -> login
+      ).as(simple.singleOpt.map(_.map(User.apply _ tupled)))
+    }
+  }
+
+  private[daos] def byId(id: Id): Future[Option[User]] = Future {
+    DB.withTransaction { implicit c =>
+      SQL("""
+        SELECT *
+        FROM T_USER
+        WHERE id = {id}
+      """).on(
+        "id" -> param(id)
       ).as(simple.singleOpt.map(_.map(User.apply _ tupled)))
     }
   }

@@ -1,7 +1,7 @@
 @(form: Form[(String, String)])(implicit maybeMe: Option[User], flash: Flash)
 
 @main("Sign in") {
-  <form action="@routes.Visitors.authenticate" method="POST">
+  <form action="@routes.Authentication.authenticate" method="POST">
     <fieldset>
       <legend>Sign in</legend>
       @helper.inputText(form("email"))

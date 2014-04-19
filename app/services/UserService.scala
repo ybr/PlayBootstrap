@@ -15,7 +15,7 @@ object UserService extends Loggable {
   def userDAO: UserDAO = UserPostgreDAO
 
   def create(request: UserCreate, login: String, password: String): Future[User] = {
-    log.debug("Creating user ${request}...")
+    log.debug("Creating ${request}...")
     val salt = SaltGeneratorUUID.generateSalt
     val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(password, salt)
 
@@ -30,5 +30,10 @@ object UserService extends Loggable {
         userDAO.authenticate(login, PasswordHasherSha512ToBase64.hashPassword(password, salt))
       }).map(_.flatten)
     } yield maybeUser
+  }
+
+  def update(user: User, request: UserUpdate): Future[User] = {
+    log.debug(s"Updating ${user} with ${request}...")
+    userDAO.update(user, request)
   }
 }

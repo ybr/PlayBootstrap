@@ -7,6 +7,7 @@ import models.requests._
 
 trait UserDAO {
   def create(request: UserCreate, login: String, password: String, salt: String): Future[User]
+  def update(user: User, request: UserUpdate): Future[User]
 
   def salt(login: String): Future[Option[String]]
   def authenticate(login: String, password: String): Future[Option[User]]

@@ -25,7 +25,7 @@ trait UserController extends Controller {
           case Some(user) => block(new UserRequest(user, request))
           case None => Future.successful(Forbidden)
         }
-        case None => Future.successful(Redirect(routes.Visitors.signin))
+        case None => Future.successful(Redirect(routes.Authentication.signin))
       }
     }
   }
