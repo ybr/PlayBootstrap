@@ -36,4 +36,21 @@ object UserService extends Loggable {
     log.debug(s"Updating ${user} with ${request}...")
     userDAO.update(user, request)
   }
+
+  // TODO use monad transformer future option
+  def updatePassword(login: String, oldPassword: String, newPassword: String): Future[Option[Unit]] = {
+    log.debug(s"Updating password for login ${login}")
+    for {
+      maybeSalt <- userDAO.salt(login)
+      maybeUser <- FutureUtils.sequence(maybeSalt.map { salt =>
+        userDAO.authenticate(login, PasswordHasherSha512ToBase64.hashPassword(oldPassword, salt))
+      }).map(_.flatten)
+      update <- FutureUtils.sequence(maybeUser map { user =>
+        log.debug(s"Updating password for ${user}...")
+        val salt = SaltGeneratorUUID.generateSalt
+        val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(newPassword, salt)
+        userDAO.updatePassword(login, hashedPassword, salt)
+      }).map(_.flatten)
+    } yield update
+  }
 }

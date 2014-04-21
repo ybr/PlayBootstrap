@@ -1,4 +1,4 @@
-@()(implicit me: User, flash: Flash)
+@(login: String)(implicit me: User, flash: Flash)
 
 @main("My home") {
   <h1>Your area</h1>
@@ -14,5 +14,14 @@
       <dd>@{me.email}</dd>
     </dl>
     <a href="@routes.Users.profile">Modify my profile</a>
+  </section>
+
+  <section>
+    <h2>Credentials</h2>
+    <dl>
+      <dt>Login</dt>
+      <dd>@{login}</dd>
+    </dl>
+    <a href="@routes.Users.password">Modify my password</a>
   </section>
 }

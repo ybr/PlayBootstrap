@@ -8,8 +8,10 @@ GET     /signout            controllers.Authentication.signout
 POST    /authenticate       controllers.Authentication.authenticate
 
 GET     /me                 controllers.Users.home
-GET     /profile            controllers.Users.profile
-POST    /profile            controllers.Users.profileUpdate
+GET     /me/profile         controllers.Users.profile
+POST    /me/profile         controllers.Users.profileUpdate
+GET     /me/password        controllers.Users.password
+POST    /me/password        controllers.Users.passwordUpdate
 
 
 GET     /assets/*file       controllers.Assets.at(path="/public", file)

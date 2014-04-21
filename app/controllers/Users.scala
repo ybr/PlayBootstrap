@@ -15,7 +15,7 @@ import services._
 
 object Users extends UserController {
   def home() = WithUser { implicit request =>
-    Ok(views.html.users.home())
+    Ok(views.html.users.home(request.session("login")))
   }
 
   def userUpdateForm = Form(mapping(
@@ -36,6 +36,30 @@ object Users extends UserController {
       userUpdate => {
         UserService.update(request.me, userUpdate).map { _ =>
           Redirect(routes.Users.home).flashing("success" -> Messages("flash.users.profile.update"))
+        }
+      }
+    )
+  }
+
+  val updatePasswordForm = Form(tuple(
+    "password" -> nonEmptyText(maxLength = 255),
+    "newpassword" -> nonEmptyText(maxLength = 255)
+  ))
+
+  def password = WithUser { implicit request =>
+    Ok(views.html.users.password(updatePasswordForm))
+  }
+
+  def passwordUpdate = WithUser.async { implicit request =>
+    updatePasswordForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(views.html.users.password(formWithErrors))),
+      updatePassword => {
+        val (password, newPassword) = updatePassword
+        UserService.updatePassword(request.session("login"), password, newPassword) map {
+          case Some(_) => Redirect(routes.Users.home).flashing("success" -> Messages("flash.users.password.update"))
+          case None => BadRequest(views.html.users.password(
+            updatePasswordForm.fill(updatePassword).withError("password", "error.password"))
+          )
         }
       }
     )

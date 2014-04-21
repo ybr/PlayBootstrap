@@ -77,6 +77,23 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
     byId(user.id).map(_.get)
   }
 
+  def updatePassword(login: String, password: String, salt: String): Future[Option[Unit]] = Future {
+    DB.withTransaction { implicit c =>
+      val updates = SQL("""
+        UPDATE T_CREDENTIALS
+        SET
+          password = {password},
+          salt = {salt}
+        WHERE login = {login}
+      """).on(
+        "login" -> login,
+        "password" -> password,
+        "salt" -> salt
+      ).executeUpdate()
+      if(updates == 0) None else Some(())
+    }
+  }
+
   def salt(login: String): Future[Option[String]] = Future {
     DB.withTransaction { implicit c =>
       SQL("""
