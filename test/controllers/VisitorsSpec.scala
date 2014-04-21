@@ -1,3 +1,5 @@
+package controllers
+
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
@@ -6,8 +8,7 @@ import play.api.test._
 import play.api.test.Helpers._
 
 class VisitorsSpec extends Specification {
-
-  "Viitors signup" should {
+  "Visitors signup" should {
     "respond with bad request if the login is missing" in new WithApplication {
       val response = route(FakeRequest(POST, "/signup").withFormUrlEncodedBody("email" -> "user@domain.com")).get
       status(response) must be equalTo(400)
