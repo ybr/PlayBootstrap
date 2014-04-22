@@ -13,5 +13,10 @@ POST    /me/profile         controllers.Users.profileUpdate
 GET     /me/password        controllers.Users.password
 POST    /me/password        controllers.Users.passwordUpdate
 
+GET     /admin              controllers.admins.Admins.home
+GET     /admin/signout      controllers.admins.Authentication.signout
+
+GET     /admin/users        controllers.admins.Users.search
+GET     /admin/admins       controllers.admins.Admins.search
 
 GET     /assets/*file       controllers.Assets.at(path="/public", file)

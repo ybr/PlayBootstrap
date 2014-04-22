@@ -1,0 +1,28 @@
+@(title: String)(content: Html)(implicit admin: Admin, flash: Flash)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>ADMIN - @title</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+    </head>
+    <body>
+        <header>
+          <nav>
+            <ul>
+              <li class="brand"><a href="@controllers.admins.routes.Admins.home">Home</a></li>
+              <li><a href="@controllers.admins.routes.Users.search">Users</a></li>
+              <li><a href="@controllers.admins.routes.Admins.search">Admins</a></li>
+              <li class="profile"><a href="@controllers.admins.routes.Admins.home">@admin.firstName</a></li>
+              <li class="signout"><a href="@controllers.admins.routes.Authentication.signout">Sign out</a></li>
+            </ul>
+          </nav>
+        </header>
+        @flash.data.toList.map { t =>
+        <div class="flash @t._1">@t._2</div>
+        }
+        @content
+    </body>
+</html>
