@@ -42,36 +42,11 @@ object Visitors extends UserController {
       signupData => {
         val (firstName, lastName, email, password) = signupData
         userService.create(UserCreate(firstName, lastName, email, DateTime.now), email, password) map { _ =>
-          Redirect(routes.Visitors.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
+          Redirect(routes.Authentication.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
         } recover {
           case AccountAlreadyExistsException(login, _) =>
             implicit val flash = Flash(Map("error" -> Messages("flash.visitors.alreadyExists", login)))
             BadRequest(views.html.visitors.signup(signupForm.fill(signupData)))
-        }
-      }
-    )
-  }
-
-  private val signinForm = Form(tuple(
-    "email" -> email.verifying(maxLength(255)),
-    "password" -> nonEmptyText(maxLength = 255)
-  ))
-
-  def signin() = WithMaybeUser { implicit request =>
-    Ok(views.html.visitors.signin(signinForm))
-  }
-
-  def authenticate() = WithMaybeUser.async { implicit request =>
-    signinForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.visitors.signin(formWithErrors))),
-      signinData => {
-        val (email, password) = signinData
-        userService.authenticate(email, password) map {
-          case Some(user) => Redirect(routes.Users.home).withSession("login" -> email)
-          case None => {
-            implicit val flash = Flash(Map("error" -> Messages("flash.visitors.credentialsUnknown")))
-            Unauthorized(views.html.visitors.signin(signinForm.fill(signinData)))
-          }
         }
       }
     )

@@ -3,10 +3,15 @@ GET     /                   controllers.Visitors.home
 GET     /signup             controllers.Visitors.signup
 POST    /signup             controllers.Visitors.subscribe
 
-GET     /signin             controllers.Visitors.signin
-POST    /authenticate       controllers.Visitors.authenticate
+GET     /signin             controllers.Authentication.signin
+GET     /signout            controllers.Authentication.signout
+POST    /authenticate       controllers.Authentication.authenticate
 
 GET     /me                 controllers.Users.home
-GET     /me/signout         controllers.Users.signout
+GET     /me/profile         controllers.Users.profile
+POST    /me/profile         controllers.Users.profileUpdate
+GET     /me/password        controllers.Users.password
+POST    /me/password        controllers.Users.passwordUpdate
+
 
 GET     /assets/*file       controllers.Assets.at(path="/public", file)

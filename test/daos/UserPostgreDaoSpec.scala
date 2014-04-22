@@ -51,5 +51,24 @@ object UserPostgreDaoSpec extends Specification with DaoSpec {
         UserPostgreDAO.authenticate("login", "pwd")
       } must beSome
     }
+
+    "retrieve by id" in new WithInMemoryDB {
+      val user = await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", DateTime.now), "login", "pwd", "someSalt"))
+      await {
+        UserPostgreDAO.byId(user.id)
+      } must beSome
+    }
+
+    "update the user" in new WithInMemoryDB {
+      val user = await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", DateTime.now), "login", "pwd", "someSalt"))
+      val newUser = await(UserPostgreDAO.update(user, UserUpdate("newFirstName", "newLastName", "user@newdomain.com")))
+      val readUser = await(UserPostgreDAO.byId(user.id)).get
+
+      readUser.id.value must be equalTo(user.id.value)
+      readUser.firstName must be equalTo("newFirstName")
+      readUser.lastName must be equalTo("newLastName")
+      readUser.email must be equalTo("user@newdomain.com")
+      readUser.creation must be equalTo(user.creation)
+    }
   }
 }
