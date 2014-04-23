@@ -19,8 +19,6 @@ import models.requests._
 import utils._
 
 object Visitors extends UserController {
-  def userService = services.UserService
-
   def home() = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.home())
   }
