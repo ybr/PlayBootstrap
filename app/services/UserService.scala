@@ -3,7 +3,7 @@ package services
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits._
 
-import ybr.log._
+import ybr.playground.log._
 
 import utils.credentials._
 import daos._
@@ -11,7 +11,7 @@ import models.requests._
 import models._
 import utils._
 
-object UserService extends Loggable {
+object UserService extends Logger {
   def userDAO: UserDAO = UserPostgreDAO
 
   def create(request: UserCreate, login: String, password: String): Future[User] = {
@@ -33,6 +33,8 @@ object UserService extends Loggable {
   }
 
   def byLogin = userDAO.byLogin _
+
+  def all = userDAO.all
 
   def update(user: User, request: UserUpdate): Future[User] = {
     log.debug(s"Updating ${user} with ${request}...")

@@ -9,12 +9,11 @@ import anorm.SqlParser._
 import play.api.db.DB
 import play.api.Play.current
 
-import ybr.sql.SqlParsers._
-
 import models._
 import models.requests._
 import models.exceptions._
 import utils.SqlParsers._
+import utils.SqlParsers.pg._
 
 object AdminPostgreDAO extends AdminDAO with PostgreDAO {
   val simple = id("id") ~

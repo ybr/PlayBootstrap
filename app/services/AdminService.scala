@@ -4,7 +4,7 @@ import scala.concurrent.Future
 
 import play.api.libs.concurrent.Execution.Implicits._
 
-import ybr.log._
+import ybr.playground.log._
 
 import models._
 import models.requests._
@@ -12,7 +12,7 @@ import daos._
 import utils._
 import utils.credentials._
 
-object AdminService extends Loggable {
+object AdminService extends Logger {
   def adminDAO: AdminDAO = AdminPostgreDAO
 
   def create(request: AdminCreate, login: String, password: String): Future[Admin] = {

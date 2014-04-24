@@ -7,21 +7,21 @@ import org.joda.time._
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits._
 
-import ybr.log._
+import ybr.playground.log._
 
 import models._
 import models.requests._
 import daos._
 import services._
 
-object Admins extends AdminController with Loggable {
+object Admins extends AdminController with Logger {
   def home() = WithAdmin { implicit request =>
     Ok(views.html.admins.home())
   }
 
   def all = WithAdmin.async { implicit request =>
     adminService.all map { admins =>
-      Ok(views.html.admins.list(admins))
+      Ok(views.html.admins.admins(admins))
     }
   }
 
