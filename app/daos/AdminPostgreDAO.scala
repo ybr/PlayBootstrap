@@ -85,9 +85,9 @@ object AdminPostgreDAO extends AdminDAO with PostgreDAO {
     }
   }
 
-  def count(): Future[Long] = Future {
+  def all(): Future[Seq[Admin]] = Future {
     DB.withTransaction { implicit c =>
-      SQL("SELECT COUNT(*) FROM T_ADMIN").as(scalar[Long].single)
+      SQL("SELECT * FROM T_ADMIN").as(simple *).map(Admin.apply _ tupled)
     }
   }
 

@@ -11,6 +11,6 @@ trait AdminDAO {
   def salt(login: String): Future[Option[String]]
   def authenticate(login: String, password: String): Future[Option[Admin]]
 
-  def count(): Future[Long]
+  def all(): Future[Seq[Admin]]
   def byLogin(login: String): Future[Option[Admin]]
 }

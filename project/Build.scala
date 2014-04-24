@@ -12,7 +12,8 @@ object ApplicationBuild extends Build {
       "postgresql" % "postgresql" % "9.1-901.jdbc4",
       "commons-codec" % "commons-codec" % "1.9"
     ),
-    scalacOptions += "-feature"
+    scalacOptions += "-feature",
+    routesImport ++= Seq("_root_.utils.binders._", "models._")
   ).dependsOn(playground)
 }
 

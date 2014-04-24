@@ -20,7 +20,8 @@ POST    /admin/signin       controllers.admins.Authentication.authenticate
 GET     /admin/signout      controllers.admins.Authentication.signout
 
 GET     /admin/users        controllers.admins.Users.search
-GET     /admin/admins       controllers.admins.Admins.search
+GET     /admin/admins       controllers.admins.Admins.all
+GET     /admin/admins/:id   controllers.admins.Admins.details(id: Id)
 
 POST    /admin/default      controllers.admins.Admins.default
 

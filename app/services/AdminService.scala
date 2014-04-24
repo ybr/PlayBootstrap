@@ -36,5 +36,5 @@ object AdminService extends Loggable {
 
   def byLogin(login: String): Future[Option[Admin]] = adminDAO.byLogin(login)
 
-  def count(): Future[Long] = adminDAO.count
+  def all(): Future[Seq[Admin]] = adminDAO.all
 }
