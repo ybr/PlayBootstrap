@@ -39,7 +39,7 @@ object Visitors extends UserController {
       formWithErrors => Future.successful(BadRequest(views.html.visitors.signup(formWithErrors))),
       signupData => {
         val (firstName, lastName, email, password) = signupData
-        userService.create(UserCreate(firstName, lastName, email, DateTime.now), email, password) map { _ =>
+        userService.create(UserCreate(firstName, lastName, email, true, DateTime.now), email, password) map { _ =>
           Redirect(routes.Authentication.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
         } recover {
           case AccountAlreadyExistsException(login, _) =>

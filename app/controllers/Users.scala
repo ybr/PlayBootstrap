@@ -18,23 +18,25 @@ object Users extends UserController {
     Ok(views.html.users.home(request.session("login")))
   }
 
-  def userUpdateForm = Form(mapping(
+  case class UpdateForm(firstName: String, lastName: String, email: String)
+  val userUpdateForm = Form(mapping(
     "firstname" -> nonEmptyText.verifying(maxLength(255)),
     "lastname" -> nonEmptyText.verifying(maxLength(255)),
     "email" -> email.verifying(maxLength(255))
-  )(UserUpdate.apply)(UserUpdate.unapply))
+  )(UpdateForm.apply)(UpdateForm.unapply))
 
   def profile = WithUser { implicit request =>
     val me = request.me
-    val knownData = UserUpdate(me.firstName, me.lastName, me.email)
+    val knownData = UpdateForm(me.firstName, me.lastName, me.email)
     Ok(views.html.users.profile(userUpdateForm.fill(knownData)))
   }
 
   def profileUpdate = WithUser.async { implicit request =>
     userUpdateForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.users.profile(formWithErrors))),
-      userUpdate => {
-        UserService.update(request.me, userUpdate).map { _ =>
+      updateData => {
+        val me = request.me
+        UserService.update(me, UserUpdate(updateData.firstName, updateData.lastName, updateData.email, me.active)).map { _ =>
           Redirect(routes.Users.home).flashing("success" -> Messages("flash.users.profile.update"))
         }
       }

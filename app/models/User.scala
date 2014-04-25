@@ -7,5 +7,6 @@ case class User(
   firstName: String,
   lastName: String,
   email: String,
+  active: Boolean,
   creation: DateTime
 ) extends Identifiable

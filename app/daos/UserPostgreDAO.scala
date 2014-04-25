@@ -20,6 +20,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
     str("first_name") ~
     str("last_name") ~
     str("email") ~
+    bool("active") ~
     joda.date("creation") map flatten
 
   def create(request: UserCreate, login: String, password: String, salt: String): Future[User] = Future {
@@ -63,13 +64,15 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
         SET
           first_name = {firstName},
           last_name = {lastName},
-          email = {email}
+          email = {email},
+          active = {active}
         WHERE id = {id}
       """).on(
+        "id" -> param(user.id),
         "firstName" -> request.firstName,
         "lastName" -> request.lastName,
         "email" -> request.email,
-        "id" -> param(user.id)
+        "active" -> request.active
       ).executeUpdate
     }
   } flatMap { _ =>
@@ -114,6 +117,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
         WHERE
           login = {login}
           AND password = {password}
+          AND u.active
       """).on(
         "login" -> login,
         "password" -> password
@@ -142,7 +146,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
     }
   }
 
-  private[daos] def byId(id: Id): Future[Option[User]] = Future {
+  def byId(id: Id): Future[Option[User]] = Future {
     DB.withTransaction { implicit c =>
       SQL("""
         SELECT *

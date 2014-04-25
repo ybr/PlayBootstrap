@@ -12,30 +12,37 @@ import models.exceptions._
 object UserPostgreDaoSpec extends Specification with DaoSpec {
   "UserPostgreDAO" should {
     "create an account" in new WithInMemoryDB {
-      val user = await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", DateTime.now), "login", "pwd", "someSalt"))
+      val user = await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", true, DateTime.now), "login", "pwd", "someSalt"))
       user.id.value.length > 0 must beTrue
     }
 
     "not create an account when the login already exists" in new WithInMemoryDB {
       await {
-        UserPostgreDAO.create(UserCreate("firstName0", "lastName0", "user0@domain.com", DateTime.now),"login",  "pwd", "someSalt")
+        UserPostgreDAO.create(UserCreate("firstName0", "lastName0", "user0@domain.com", true, DateTime.now),"login",  "pwd", "someSalt")
       }
       await {
-        UserPostgreDAO.create(UserCreate("firstName1", "lastName1", "user1@domain.com", DateTime.now),"login",  "otherPwd", "someOtherSalt")
+        UserPostgreDAO.create(UserCreate("firstName1", "lastName1", "user1@domain.com", true, DateTime.now),"login",  "otherPwd", "someOtherSalt")
       } must throwAn[AccountAlreadyExistsException]
     }
 
     "retrieve salt" in new WithInMemoryDB {
-      await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", DateTime.now), "login", "pwd", "someSalt"))
+      await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", true, DateTime.now), "login", "pwd", "someSalt"))
       await {
         UserPostgreDAO.salt("login")
       }.get must be equalTo("someSalt")
     }
 
     "retrieve user by login" in new WithInMemoryDB {
-      await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", DateTime.now), "login", "pwd", "someSalt"))
+      await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", true, DateTime.now), "login", "pwd", "someSalt"))
       await {
         UserPostgreDAO.byLogin("login")
+      } must beSome
+    }
+
+    "retrieve user by id" in new WithInMemoryDB {
+      val user = await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", true, DateTime.now), "login", "pwd", "someSalt"))
+      await {
+        UserPostgreDAO.byId(user.id)
       } must beSome
     }
 
@@ -46,21 +53,21 @@ object UserPostgreDaoSpec extends Specification with DaoSpec {
     }
 
     "authenticate a user with its login and password" in new WithInMemoryDB {
-      await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", DateTime.now), "login", "pwd", "someSalt"))
+      await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", true, DateTime.now), "login", "pwd", "someSalt"))
       await {
         UserPostgreDAO.authenticate("login", "pwd")
       } must beSome
     }
 
     "retrieve by id" in new WithInMemoryDB {
-      val user = await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", DateTime.now), "login", "pwd", "someSalt"))
+      val user = await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", true, DateTime.now), "login", "pwd", "someSalt"))
       await {
         UserPostgreDAO.byId(user.id)
       } must beSome
     }
 
     "update the user" in new WithInMemoryDB {
-      val user = await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", DateTime.now), "login", "pwd", "someSalt"))
+      val user = await(UserPostgreDAO.create(UserCreate("firstName", "lastName", "user@domain.com", true, DateTime.now), "login", "pwd", "someSalt"))
       val newUser = await(UserPostgreDAO.update(user, UserUpdate("newFirstName", "newLastName", "user@newdomain.com")))
       val readUser = await(UserPostgreDAO.byId(user.id)).get
 

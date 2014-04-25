@@ -15,7 +15,7 @@ object UserService extends Logger {
   def userDAO: UserDAO = UserPostgreDAO
 
   def create(request: UserCreate, login: String, password: String): Future[User] = {
-    log.debug("Creating ${request} with login ${login} ...")
+    log.debug(s"Creating ${request} with login ${login} ...")
     val salt = SaltGeneratorUUID.generateSalt
     val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(password, salt)
 
@@ -33,6 +33,7 @@ object UserService extends Logger {
   }
 
   def byLogin = userDAO.byLogin _
+  def byId = userDAO.byId _
 
   def all = userDAO.all
 

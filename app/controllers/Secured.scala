@@ -21,7 +21,7 @@ trait UserController extends Controller {
   object WithUser extends ActionBuilder[UserRequest] {
     def invokeBlock[A](request: Request[A], block: UserRequest[A] => Future[SimpleResult]) = {
       request.session.get("login") match {
-        case Some(email) => userService.byLogin(email) flatMap {
+        case Some(email) => userService.byLogin(email).map(_.filter(_.active)) flatMap {
           case Some(user) => block(new UserRequest(user, request))
           case None => Future.successful(Forbidden)
         }
@@ -33,7 +33,7 @@ trait UserController extends Controller {
   object WithMaybeUser extends ActionBuilder[MaybeUserRequest] {
     def invokeBlock[A](request: Request[A], block: MaybeUserRequest[A] => Future[SimpleResult]) = for {
       maybeEmail <- Future.successful(request.session.get("login"))
-      maybeUser <- FutureUtils.sequence(maybeEmail.map(email => userService.byLogin(email))).map(_.flatten)
+      maybeUser <- FutureUtils.sequence(maybeEmail.map(email => userService.byLogin(email).map(_.filter(_.active)))).map(_.flatten)
       result <- block(new MaybeUserRequest(maybeUser, request))
     } yield result
   }

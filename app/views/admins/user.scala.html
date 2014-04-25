@@ -1,0 +1,23 @@
+@(form: Form[Boolean], user: User)(implicit admin: Admin, flash: Flash)
+
+@main(s"User ${user.firstName}") {
+  <dl>
+    <dt>ID</dt>
+    <dd>@{user.id | id}</dd>
+    <dt>First name</dt>
+    <dd>@{user.firstName}</dd>
+    <dt>Last name</dt>
+    <dd>@{user.lastName}</dd>
+    <dt>Email</dt>
+    <dd>@{user.email}</dd>
+    <dt>Creation date</dt>
+    <dd>@{user.creation | date.long}</dd>
+  </dl>
+  <form action="@controllers.admins.routes.Users.update(user.id)" method="POST">
+    <fieldset>
+      <legend>Status</legend>
+      @helper.checkbox(form("active"))
+    </fieldset>
+    <button>Update</button>
+  </form>
+}

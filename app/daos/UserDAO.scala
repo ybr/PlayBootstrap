@@ -14,5 +14,6 @@ trait UserDAO {
   def authenticate(login: String, password: String): Future[Option[User]]
 
   def byLogin(login: String): Future[Option[User]]
+  def byId(id: Id): Future[Option[User]]
   def all(): Future[Seq[User]]
 }
