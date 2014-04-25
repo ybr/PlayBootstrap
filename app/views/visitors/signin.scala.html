@@ -1,4 +1,4 @@
-@(form: Form[(String, String)])(implicit maybeMe: Option[User], flash: Flash)
+@(form: Form[(String, Password)])(implicit maybeMe: Option[User], flash: Flash)
 
 @main("Sign in") {
   <form action="@routes.Authentication.authenticate" method="POST">

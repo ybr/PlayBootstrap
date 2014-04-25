@@ -10,10 +10,13 @@ import play.api.i18n._
 
 import play.api.libs.concurrent.Execution.Implicits._
 
-object Authentication extends UserController {
+import models._
+import utils.Mappings._
+
+object Authentication extends UserController with ybr.playground.log.Logger {
   private val signinForm = Form(tuple(
     "email" -> email.verifying(maxLength(255)),
-    "password" -> nonEmptyText(maxLength = 255)
+    "password" -> nonEmptyText(maxLength = 255).password
   ))
 
   def signin() = WithMaybeUser { implicit request =>

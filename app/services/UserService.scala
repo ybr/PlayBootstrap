@@ -22,12 +22,12 @@ object UserService extends Logger {
     userDAO.create(request, login, hashedPassword, salt)
   }
 
-  def authenticate(login: String, password: String): Future[Option[User]] = {
+  def authenticate(login: String, password: Password): Future[Option[User]] = {
     log.debug(s"Authenticating user with login ${login} ...")
     for {
       maybeSalt <- userDAO.salt(login)
       maybeUser <- FutureUtils.sequence(maybeSalt.map { salt =>
-        userDAO.authenticate(login, PasswordHasherSha512ToBase64.hashPassword(password, salt))
+        userDAO.authenticate(login, password.neverLog(PasswordHasherSha512ToBase64.hashPassword(_, salt)))
       }).map(_.flatten)
     } yield maybeUser
   }
@@ -43,17 +43,17 @@ object UserService extends Logger {
   }
 
   // TODO use monad transformer future option
-  def updatePassword(login: String, oldPassword: String, newPassword: String): Future[Option[Unit]] = {
+  def updatePassword(login: String, oldPassword: Password, newPassword: Password): Future[Option[Unit]] = {
     log.debug(s"Updating password for login ${login}")
     for {
       maybeSalt <- userDAO.salt(login)
       maybeUser <- FutureUtils.sequence(maybeSalt.map { salt =>
-        userDAO.authenticate(login, PasswordHasherSha512ToBase64.hashPassword(oldPassword, salt))
+        userDAO.authenticate(login, oldPassword.neverLog(PasswordHasherSha512ToBase64.hashPassword(_, salt)))
       }).map(_.flatten)
       update <- FutureUtils.sequence(maybeUser map { user =>
         log.debug(s"Updating password for ${user}...")
         val salt = SaltGeneratorUUID.generateSalt
-        val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(newPassword, salt)
+        val hashedPassword = newPassword.neverLog(PasswordHasherSha512ToBase64.hashPassword(_, salt))
         userDAO.updatePassword(login, hashedPassword, salt)
       }).map(_.flatten)
     } yield update

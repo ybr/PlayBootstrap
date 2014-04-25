@@ -10,8 +10,10 @@ import play.api.i18n._
 
 import play.api.libs.concurrent.Execution.Implicits._
 
+import models._
 import models.requests._
 import services._
+import utils.Mappings._
 
 object Users extends UserController {
   def home() = WithUser { implicit request =>
@@ -44,8 +46,8 @@ object Users extends UserController {
   }
 
   val updatePasswordForm = Form(tuple(
-    "password" -> nonEmptyText(maxLength = 255),
-    "newpassword" -> nonEmptyText(maxLength = 255)
+    "password" -> nonEmptyText(maxLength = 255).password,
+    "newpassword" -> nonEmptyText(maxLength = 255).password
   ))
 
   def password = WithUser { implicit request =>
