@@ -9,6 +9,7 @@ import org.specs2.mutable._
 import models.requests._
 import models.exceptions._
 
+// TODO complete tests
 object UserPostgreDaoSpec extends Specification with DaoSpec {
   "UserPostgreDAO" should {
     "create an account" in new WithInMemoryDB {

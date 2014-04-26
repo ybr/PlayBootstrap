@@ -17,27 +17,29 @@ object Users extends AdminController {
 
   def all = WithAdmin.async { implicit request =>
     userService.all map { users =>
-      Ok(views.html.admins.users(users))
+      Ok(views.html.admins.usersTable(users))
     }
   }
 
-  def activeForm = Form(single(
+  val activeForm = Form(single(
     "active" -> boolean
   ))
 
   def details(id: Id) = WithAdmin.async { implicit request =>
     userService.byId(id) map {
-      case Some(user) => Ok(views.html.admins.user(activeForm.fill(user.active), user))
+      case Some(user) => Ok(views.html.admins.userDetails(activeForm.fill(user.active), user))
       case None => NotFound(views.html.admins.notfound("The user can not be found"))
     }
   }
 
+  // TODO eventually use a monad transformer
   def update(id: Id) = WithAdmin.async { implicit request =>
     userService.byId(id) flatMap {
       case Some(user) => activeForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(views.html.admins.user(activeForm.fill(user.active), user))),
-        active => userService.update(user, UserUpdate(user).copy(active = active)) map { _ =>
-          Redirect(controllers.admins.routes.Users.all).flashing("success" -> Messages("flash.admin.users.update", user.firstName, user.lastName))
+        formWithErrors => Future.successful(BadRequest(views.html.admins.userDetails(activeForm.fill(user.active), user))),
+        active => userService.update(user, UserUpdate(user).copy(active = active)) map {
+          case Some(updatedUser) => Redirect(controllers.admins.routes.Users.all).flashing("success" -> Messages("flash.admin.users.update", updatedUser.firstName, updatedUser.lastName))
+          case None => NotFound(views.html.admins.notfound("The user can not be found"))
         }
       )
       case None => Future.successful(NotFound(views.html.admins.notfound("The user can not be found")))

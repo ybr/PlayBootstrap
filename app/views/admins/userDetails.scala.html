@@ -1,4 +1,4 @@
-@(form: Form[Boolean], user: User)(implicit admin: Admin, flash: Flash)
+@(form: Form[Boolean], user: User)(implicit me: Admin, flash: Flash)
 
 @main(s"User ${user.firstName}") {
   <dl>

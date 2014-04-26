@@ -25,6 +25,7 @@ POST    /admin/users/:id    controllers.admins.Users.update(id: Id)
 
 GET     /admin/admins       controllers.admins.Admins.all
 GET     /admin/admins/:id   controllers.admins.Admins.details(id: Id)
+POST    /admin/admins/:id   controllers.admins.Admins.update(id: Id)
 
 POST    /admin/default      controllers.admins.Admins.default
 

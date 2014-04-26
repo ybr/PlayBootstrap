@@ -9,6 +9,7 @@ import org.specs2.mutable._
 import models.requests._
 import models.exceptions._
 
+// TODO complete tests
 object AdminPostgreDaoSpec extends Specification with DaoSpec {
   "AdminPostgreDAO" should {
     "create an account" in new WithInMemoryDB {

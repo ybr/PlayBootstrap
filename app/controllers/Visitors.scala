@@ -17,6 +17,7 @@ import models._
 import models.exceptions._
 import models.requests._
 import utils._
+import utils.Mappings._
 
 object Visitors extends UserController {
   def home() = WithMaybeUser { implicit request =>
@@ -27,7 +28,7 @@ object Visitors extends UserController {
     "firstname" -> nonEmptyText.verifying(maxLength(255)),
     "lastname" -> nonEmptyText.verifying(maxLength(255)),
     "email" -> email.verifying(maxLength(255)),
-    "password" -> nonEmptyText(maxLength = 255)
+    "password" -> nonEmptyText(maxLength = 255).password
   ))
 
   def signup() = WithMaybeUser { implicit request =>

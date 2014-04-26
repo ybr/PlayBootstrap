@@ -15,8 +15,8 @@ class MaybeUserRequest[A](val maybeMe: Option[User], request: Request[A]) extend
 trait UserController extends Controller {
   def userService = UserService
 
-  implicit def user[A](implicit request: UserRequest[A]): User = request.me
-  implicit def maybeUser[A](implicit request: MaybeUserRequest[A]): Option[User] = request.maybeMe
+  implicit def me[A](implicit request: UserRequest[A]): User = request.me
+  implicit def maybeMe[A](implicit request: MaybeUserRequest[A]): Option[User] = request.maybeMe
 
   object WithUser extends ActionBuilder[UserRequest] {
     def invokeBlock[A](request: Request[A], block: UserRequest[A] => Future[SimpleResult]) = {

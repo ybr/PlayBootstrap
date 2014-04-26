@@ -1,4 +1,4 @@
-@(users: Seq[User])(implicit admin: Admin, flash: Flash, lang: Lang)
+@(users: Seq[User])(implicit me: Admin, flash: Flash, lang: Lang)
 
 @main("List of users") {
   <table>

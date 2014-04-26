@@ -14,7 +14,7 @@ import utils._
 object UserService extends Logger {
   def userDAO: UserDAO = UserPostgreDAO
 
-  def create(request: UserCreate, login: String, password: String): Future[User] = {
+  def create(request: UserCreate, login: String, password: Password): Future[User] = {
     log.debug(s"Creating ${request} with login ${login} ...")
     val salt = SaltGeneratorUUID.generateSalt
     val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(password, salt)
@@ -27,7 +27,7 @@ object UserService extends Logger {
     for {
       maybeSalt <- userDAO.salt(login)
       maybeUser <- FutureUtils.sequence(maybeSalt.map { salt =>
-        userDAO.authenticate(login, password.neverLog(PasswordHasherSha512ToBase64.hashPassword(_, salt)))
+        userDAO.authenticate(login, PasswordHasherSha512ToBase64.hashPassword(password, salt))
       }).map(_.flatten)
     } yield maybeUser
   }
@@ -37,7 +37,7 @@ object UserService extends Logger {
 
   def all = userDAO.all
 
-  def update(user: User, request: UserUpdate): Future[User] = {
+  def update(user: User, request: UserUpdate): Future[Option[User]] = {
     log.debug(s"Updating ${user} with ${request}...")
     userDAO.update(user, request)
   }
@@ -48,12 +48,12 @@ object UserService extends Logger {
     for {
       maybeSalt <- userDAO.salt(login)
       maybeUser <- FutureUtils.sequence(maybeSalt.map { salt =>
-        userDAO.authenticate(login, oldPassword.neverLog(PasswordHasherSha512ToBase64.hashPassword(_, salt)))
+        userDAO.authenticate(login, PasswordHasherSha512ToBase64.hashPassword(oldPassword, salt))
       }).map(_.flatten)
       update <- FutureUtils.sequence(maybeUser map { user =>
         log.debug(s"Updating password for ${user}...")
         val salt = SaltGeneratorUUID.generateSalt
-        val hashedPassword = newPassword.neverLog(PasswordHasherSha512ToBase64.hashPassword(_, salt))
+        val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(newPassword, salt)
         userDAO.updatePassword(login, hashedPassword, salt)
       }).map(_.flatten)
     } yield update

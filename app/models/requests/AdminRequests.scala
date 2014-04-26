@@ -8,7 +8,19 @@ case class AdminCreate(
   firstName: String,
   lastName: String,
   email: String,
+  active: Boolean,
   creation: DateTime
 ) extends RequestCreate[Admin] {
-  def withId(id: Id): Admin = Admin(id, firstName, lastName, email, creation)
+  def withId(id: Id): Admin = Admin(id, firstName, lastName, email, active, creation)
+}
+
+case class AdminUpdate(
+  firstName: String,
+  lastName: String,
+  email: String,
+  active: Boolean
+)
+
+object AdminUpdate extends RequestUpdate[Admin, AdminUpdate] {
+  def apply(a: Admin) = AdminUpdate(a.firstName, a.lastName, a.email, a.active)
 }

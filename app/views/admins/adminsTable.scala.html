@@ -1,4 +1,4 @@
-@(admins: Seq[Admin])(implicit admin: Admin, flash: Flash)
+@(admins: Seq[Admin])(implicit me: Admin, flash: Flash)
 
 @main("List of admins") {
   <table>
@@ -9,6 +9,7 @@
         <th>First name</th>
         <th>Last name</th>
         <th>email</th>
+        <th>Active</th>
         <th>Creation date</th>
       </tr>
     </thead>
@@ -19,6 +20,7 @@
         <td>@admin.firstName</td>
         <td>@admin.lastName</td>
         <td>@admin.email</td>
+        <td>@{admin.active | bool}</td>
         <td>@{admin.creation | datetime.short}</td>
       </tr>
       }

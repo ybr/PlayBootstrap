@@ -20,6 +20,7 @@ object AdminPostgreDAO extends AdminDAO with PostgreDAO {
     str("first_name") ~
     str("last_name") ~
     str("email") ~
+    bool("active") ~
     joda.date("creation") map flatten
 
   def create(request: AdminCreate, login: String, password: String, salt: String): Future[Admin] = Future {
@@ -56,6 +57,28 @@ object AdminPostgreDAO extends AdminDAO with PostgreDAO {
     }
   })
 
+  def update(admin: Admin, request: AdminUpdate): Future[Option[Admin]] = Future {
+    DB.withTransaction { implicit c =>
+      SQL("""
+        UPDATE T_ADMIN
+        SET
+          first_name = {firstName},
+          last_name = {lastName},
+          email = {email},
+          active = {active}
+        WHERE id = {id}
+      """).on(
+        "id" -> param(admin.id),
+        "firstName" -> request.firstName,
+        "lastName" -> request.lastName,
+        "email" -> request.email,
+        "active" -> request.active
+      ).executeUpdate
+    }
+  } flatMap { _ =>
+    byId(admin.id)
+  }
+
   def salt(login: String): Future[Option[String]] = Future {
     DB.withTransaction { implicit c =>
       SQL("""
@@ -75,8 +98,9 @@ object AdminPostgreDAO extends AdminDAO with PostgreDAO {
           T_CREDENTIALS c
           INNER JOIN T_ADMIN a ON a.credentials_id = c.id
         WHERE
-          login = {login}
-          AND password = {password}
+          c.login = {login}
+          AND c.password = {password}
+          AND a.active
       """).on(
         "login" -> login,
         "password" -> password
@@ -101,6 +125,18 @@ object AdminPostgreDAO extends AdminDAO with PostgreDAO {
         WHERE c.login = {login}
       """).on(
         "login" -> login
+      ).as(simple.singleOpt.map(_.map(Admin.apply _ tupled)))
+    }
+  }
+
+  def byId(id: Id): Future[Option[Admin]] = Future {
+    DB.withTransaction { implicit c =>
+      SQL("""
+        SELECT *
+        FROM T_ADMIN
+        WHERE id = {id}
+      """).on(
+        "id" -> param(id)
       ).as(simple.singleOpt.map(_.map(Admin.apply _ tupled)))
     }
   }

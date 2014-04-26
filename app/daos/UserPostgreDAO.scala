@@ -57,7 +57,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
     }
   })
 
-  def update(user: User, request: UserUpdate): Future[User] = Future {
+  def update(user: User, request: UserUpdate): Future[Option[User]] = Future {
     DB.withTransaction { implicit c =>
       SQL("""
         UPDATE T_USER
@@ -76,7 +76,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
       ).executeUpdate
     }
   } flatMap { _ =>
-    byId(user.id).map(_.get)
+    byId(user.id)
   }
 
   def updatePassword(login: String, password: String, salt: String): Future[Option[Unit]] = Future {
@@ -115,8 +115,8 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
           T_CREDENTIALS c
           INNER JOIN T_USER u ON u.credentials_id = c.id
         WHERE
-          login = {login}
-          AND password = {password}
+          c.login = {login}
+          AND c.password = {password}
           AND u.active
       """).on(
         "login" -> login,

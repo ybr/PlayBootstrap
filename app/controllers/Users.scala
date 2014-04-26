@@ -28,7 +28,6 @@ object Users extends UserController {
   )(UpdateForm.apply)(UpdateForm.unapply))
 
   def profile = WithUser { implicit request =>
-    val me = request.me
     val knownData = UpdateForm(me.firstName, me.lastName, me.email)
     Ok(views.html.users.profile(userUpdateForm.fill(knownData)))
   }
@@ -37,7 +36,6 @@ object Users extends UserController {
     userUpdateForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.users.profile(formWithErrors))),
       updateData => {
-        val me = request.me
         UserService.update(me, UserUpdate(updateData.firstName, updateData.lastName, updateData.email, me.active)).map { _ =>
           Redirect(routes.Users.home).flashing("success" -> Messages("flash.users.profile.update"))
         }

@@ -22,5 +22,5 @@ case class UserUpdate(
 )
 
 object UserUpdate extends RequestUpdate[User, UserUpdate] {
-  def apply(u: User): UserUpdate = UserUpdate(u.firstName, u.lastName, u.email, u.active)
+  def apply(u: User) = UserUpdate(u.firstName, u.lastName, u.email, u.active)
 }

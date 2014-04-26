@@ -11,17 +11,20 @@ import play.api.i18n._
 import play.api.libs.concurrent.Execution.Implicits._
 
 import services._
+import utils.Mappings._
 
-object Authentication extends Controller {
-  def adminService = AdminService
-
+object Authentication extends AdminController {
   private val signinForm = Form(tuple(
     "login" -> nonEmptyText.verifying(maxLength(255)),
-    "password" -> nonEmptyText(maxLength = 255)
+    "password" -> nonEmptyText(maxLength = 255).password
   ))
 
   def signin() = Action { implicit request =>
     Ok(views.html.admins.signin(signinForm))
+  }
+
+  def signout() = Action {
+    Redirect(controllers.admins.routes.Admins.home).withNewSession
   }
 
   def authenticate() = Action.async { implicit request =>
@@ -38,9 +41,5 @@ object Authentication extends Controller {
         }
       }
     )
-  }
-
-  def signout() = Action {
-    Redirect(controllers.admins.routes.Admins.home).withNewSession
   }
 }

@@ -9,6 +9,8 @@ flash.visitors.credentialsUnknown=This account is unknown, please check both you
 flash.users.profile.update=Your profile has been successfully updated
 flash.users.password.update=Your password has been successfully updated
 
+flash.admins.credentialsUnknown=This account is unknown, please check both your email and password
+flash.admin.admins.update=The admin {0} {1} has been successfully updated
 flash.admin.users.update=The user {0} {1} has been successfully updated
 
 error.password=Wrong password

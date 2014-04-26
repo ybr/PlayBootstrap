@@ -15,7 +15,7 @@ import utils.credentials._
 object AdminService extends Logger {
   def adminDAO: AdminDAO = AdminPostgreDAO
 
-  def create(request: AdminCreate, login: String, password: String): Future[Admin] = {
+  def create(request: AdminCreate, login: String, password: Password): Future[Admin] = {
     log.debug(s"Creating ${request} with login ${login} ...")
 
     val salt = SaltGeneratorUUID.generateSalt
@@ -24,17 +24,24 @@ object AdminService extends Logger {
     adminDAO.create(request, login, hashedPassword, salt)
   }
 
-  def authenticate(login: String, password: String): Future[Option[Admin]] = {
+  def authenticate(login: String, password: Password): Future[Option[Admin]] = {
     log.debug(s"Authenticating admin with login ${login} ...")
     for {
       maybeSalt <- adminDAO.salt(login)
       maybeAdmin <- FutureUtils.sequence(maybeSalt.map { salt =>
-        adminDAO.authenticate(login, PasswordHasherSha512ToBase64.hashPassword(password, salt))
+        val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(password, salt)
+        adminDAO.authenticate(login, hashedPassword)
       }).map(_.flatten)
     } yield maybeAdmin
   }
 
-  def byLogin(login: String): Future[Option[Admin]] = adminDAO.byLogin(login)
+  def byLogin = adminDAO.byLogin _
+  def byId = adminDAO.byId _
 
   def all(): Future[Seq[Admin]] = adminDAO.all
+
+  def update(admin: Admin, request: AdminUpdate): Future[Option[Admin]] = {
+    log.debug(s"Updating ${admin} with ${request}")
+    adminDAO.update(admin, request)
+  }
 }
