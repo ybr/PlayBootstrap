@@ -2,15 +2,17 @@ email=Email
 password=Password
 newpassword=New password
 
-flash.visitors.subscribe=Your account has been successfully created
 flash.visitors.alreadyExists=This account already exists
 flash.visitors.credentialsUnknown=This account is unknown, please check both your email and password
+flash.visitors.subscribe=Your account has been successfully created
 
-flash.users.profile.update=Your profile has been successfully updated
 flash.users.password.update=Your password has been successfully updated
+flash.users.profile.update=Your profile has been successfully updated
 
-flash.admins.credentialsUnknown=This account is unknown, please check both your email and password
+flash.admin.admins.create=The admin {0} {1} has been successfully created
 flash.admin.admins.update=The admin {0} {1} has been successfully updated
 flash.admin.users.update=The user {0} {1} has been successfully updated
+flash.admins.alreadyExists=This account already exists
+flash.admins.credentialsUnknown=This account is unknown, please check both your email and password
 
 error.password=Wrong password

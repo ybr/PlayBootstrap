@@ -3,7 +3,7 @@ package utils
 import ybr.playground.views.{Formattable => PgFormattable}
 import ybr.playground.views.Formatter
 
-import models.Id
+import models._
 
 object Formattable {
   val pg = PgFormattable

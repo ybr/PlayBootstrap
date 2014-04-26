@@ -23,9 +23,12 @@ GET     /admin/users        controllers.admins.Users.all
 GET     /admin/users/:id    controllers.admins.Users.details(id: Id)
 POST    /admin/users/:id    controllers.admins.Users.update(id: Id)
 
-GET     /admin/admins       controllers.admins.Admins.all
-GET     /admin/admins/:id   controllers.admins.Admins.details(id: Id)
-POST    /admin/admins/:id   controllers.admins.Admins.update(id: Id)
+GET     /admin/admins         controllers.admins.Admins.all
+GET     /admin/admins/create  controllers.admins.Admins.createGet
+POST    /admin/admins/create  controllers.admins.Admins.create
+GET     /admin/admins/:id     controllers.admins.Admins.details(id: Id)
+POST    /admin/admins/:id     controllers.admins.Admins.update(id: Id)
+
 
 POST    /admin/default      controllers.admins.Admins.default
 

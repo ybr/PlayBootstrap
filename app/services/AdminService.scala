@@ -2,7 +2,10 @@ package services
 
 import scala.concurrent.Future
 
+import play.api.Play._
 import play.api.libs.concurrent.Execution.Implicits._
+
+import com.typesafe.plugin._
 
 import ybr.playground.log._
 
@@ -15,13 +18,22 @@ import utils.credentials._
 object AdminService extends Logger {
   def adminDAO: AdminDAO = AdminPostgreDAO
 
-  def create(request: AdminCreate, login: String, password: Password): Future[Admin] = {
+  def create(request: AdminCreate, login: String, password: Password, creator: Admin): Future[Admin] = {
     log.debug(s"Creating ${request} with login ${login} ...")
 
     val salt = SaltGeneratorUUID.generateSalt
     val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(password, salt)
 
-    adminDAO.create(request, login, hashedPassword, salt)
+
+    adminDAO.create(request, login, hashedPassword, salt).map { admin =>
+      val mail = use[MailerPlugin].email
+      mail.setSubject("Creation of your admin account")
+      mail.setRecipient(request.email)
+      mail.setFrom(configuration.getString("email.from").getOrElse(creator.email))
+      mail.sendHtml(views.html.emails.admins.create(admin, login , password, creator).body)
+
+      admin
+    }
   }
 
   def authenticate(login: String, password: Password): Future[Option[Admin]] = {

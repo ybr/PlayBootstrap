@@ -2,6 +2,8 @@ package models
 
 import org.joda.time._
 
+import ybr.playground.models.Nameable
+
 case class Admin(
   id: Id,
   firstName: String,
@@ -9,4 +11,4 @@ case class Admin(
   email: String,
   active: Boolean,
   creation: DateTime
-) extends Identifiable
+) extends Identifiable with Nameable

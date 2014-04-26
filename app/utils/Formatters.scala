@@ -3,10 +3,12 @@ package utils
 import ybr.playground.views.{ Formatters => PgFormatters }
 import ybr.playground.views.Formatter
 
+import models._
+
 object Formatters {
   val pg = PgFormatters
 
-  def id() = new Formatter[models.Id] {
-    def apply(id: models.Id) = id.value.toString
+  def id() = new Formatter[Id] {
+    def apply(id: Id) = id.value.toString
   }
 }

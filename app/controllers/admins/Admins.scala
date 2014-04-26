@@ -7,6 +7,7 @@ import org.joda.time._
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
+import play.api.data.validation.Constraints._
 import play.api.i18n._
 import play.api.libs.concurrent.Execution.Implicits._
 
@@ -14,8 +15,9 @@ import ybr.playground.log._
 
 import models._
 import models.requests._
-import daos._
+import models.exceptions._
 import services._
+import utils.Mappings._
 
 object Admins extends AdminController with Logger {
   def home() = WithAdmin { implicit request =>
@@ -53,6 +55,33 @@ object Admins extends AdminController with Logger {
     }
   }
 
+  private val creationForm = Form(tuple(
+    "firstname" -> nonEmptyText.verifying(maxLength(255)),
+    "lastname" -> nonEmptyText.verifying(maxLength(255)),
+    "email" -> email.verifying(maxLength(255)),
+    "password" -> nonEmptyText(maxLength = 255).password
+  ))
+
+  def createGet = WithAdmin { implicit request =>
+    Ok(views.html.admins.adminCreate(creationForm))
+  }
+
+  def create = WithAdmin.async { implicit request =>
+    creationForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(views.html.admins.adminCreate(formWithErrors))),
+      creationData => {
+        val (firstName, lastName, email, password) = creationData
+        adminService.create(AdminCreate(firstName, lastName, email, true, DateTime.now), email, password, me) map { admin =>
+          Redirect(controllers.admins.routes.Admins.all).flashing("success" -> Messages("flash.admin.admins.create", admin.firstName, admin.lastName))
+        } recover {
+          case AccountAlreadyExistsException(login, _) =>
+            implicit val flash = Flash(Map("error" -> Messages("flash.admins.alreadyExists", login)))
+            BadRequest(views.html.admins.adminCreate(creationForm.fill(creationData)))
+        }
+      }
+    )
+  }
+
   def default() = Action.async {
     log.info("Existing admin ?")
     for {
@@ -60,9 +89,13 @@ object Admins extends AdminController with Logger {
       result <- {
         log.info(s"Found ${count} admin(s)")
         count match {
-          case 0 => adminService.create(AdminCreate("admin", "admin", "admin@domain.com", true, DateTime.now), "admin", Password("changeme")) map { _ =>
-            Created("Default admin created")
-          }
+          case 0 =>
+            adminService.create(
+              AdminCreate("admin", "admin", "admin@domain.com", true, DateTime.now), "admin", Password("changeme"),
+              Admin(new Id { val value = "inexistant" }, "inexistant", "inexistant", "inexistant@domain.com", false, DateTime.now)
+            ) map { _ =>
+              Created("Default admin created")
+            }
           case _ => Future.successful(Ok(s"Found ${count} admin(s)"))
         }
       }

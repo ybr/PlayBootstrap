@@ -1,0 +1,21 @@
+@(createdAdmin: Admin, login: String, password: Password, creator: Admin)
+
+<html>
+<head>
+  <title>Creation of your admin account</title>
+</head>
+<body>
+  <header>Dear @{createdAdmin | fullname}</header>
+  <p>Your admin account has been created by @{creator | fullname}</p>
+  <p>
+    You can connect with the following credentials:
+    <dl>
+      <dt>Login</dt>
+      <dd>@login</dd>
+      <dt>Password</dt>
+      <dd>@{password.neverLog(identity)}</dd>
+    </dl>
+  </p>
+  <footer>Welcome to you</footer>
+</body>
+</html>

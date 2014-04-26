@@ -1,6 +1,7 @@
 @(admins: Seq[Admin])(implicit me: Admin, flash: Flash)
 
 @main("List of admins") {
+  <a href="@controllers.admins.routes.Admins.createGet()">Create a new admin</a>
   <table>
     <caption>List of admins</caption>
     <thead>
