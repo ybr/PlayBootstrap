@@ -1,0 +1,12 @@
+@(form: Form[(String, Password)])(implicit flash: Flash)
+
+@mainMaybeAdmin("Sign in") {
+  <form action="@controllers.admins.routes.Authentication.authenticate" method="POST">
+    <fieldset>
+      <legend>Sign in</legend>
+      @helper.inputText(form("login"))
+      @helper.inputPassword(form("password"))
+    </fieldset>
+    <button>Sign in</button>
+  </form>
+}(None, flash)

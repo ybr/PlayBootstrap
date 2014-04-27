@@ -4,7 +4,7 @@ import org.joda.time._
 
 import ybr.playground.models.Nameable
 
-case class User(
+case class Admin(
   id: Id,
   firstName: String,
   lastName: String,

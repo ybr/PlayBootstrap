@@ -1,0 +1,35 @@
+@(users: Seq[User])(implicit me: Admin, flash: Flash, lang: Lang)
+
+@main("List of users") {
+  <table>
+    <caption>List of admins</caption>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>email</th>
+        <th>Active</th>
+        <th>Creation date</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if(users.length == 0) {
+      <tr>
+        <td colspan="5">No user found</td>
+      </tr>
+      } else {
+        @users.map { user =>
+        <tr>
+          <td><a href="@controllers.admins.routes.Users.details(user.id)">@{user.id | id}</a></td>
+          <td>@user.firstName</td>
+          <td>@user.lastName</td>
+          <td>@user.email</td>
+          <td>@{user.active | bool}</td>
+          <td>@{user.creation | datetime.short}</td>
+        </tr>
+        }
+      }
+    </tbody>
+  </table>
+}

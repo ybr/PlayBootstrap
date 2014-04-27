@@ -17,10 +17,9 @@ import models._
 import models.exceptions._
 import models.requests._
 import utils._
+import utils.Mappings._
 
 object Visitors extends UserController {
-  def userService = services.UserService
-
   def home() = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.home())
   }
@@ -29,7 +28,7 @@ object Visitors extends UserController {
     "firstname" -> nonEmptyText.verifying(maxLength(255)),
     "lastname" -> nonEmptyText.verifying(maxLength(255)),
     "email" -> email.verifying(maxLength(255)),
-    "password" -> nonEmptyText(maxLength = 255)
+    "password" -> nonEmptyText(maxLength = 255).password
   ))
 
   def signup() = WithMaybeUser { implicit request =>
@@ -41,7 +40,7 @@ object Visitors extends UserController {
       formWithErrors => Future.successful(BadRequest(views.html.visitors.signup(formWithErrors))),
       signupData => {
         val (firstName, lastName, email, password) = signupData
-        userService.create(UserCreate(firstName, lastName, email, DateTime.now), email, password) map { _ =>
+        userService.create(UserCreate(firstName, lastName, email, true, DateTime.now), email, password) map { _ =>
           Redirect(routes.Authentication.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
         } recover {
           case AccountAlreadyExistsException(login, _) =>

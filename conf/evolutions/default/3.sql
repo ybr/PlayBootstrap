@@ -1,8 +1,8 @@
-# User schema
+# Admn schema
 
 # --- !Ups
 
-CREATE TABLE T_USER(
+CREATE TABLE T_ADMIN(
   id              BIGSERIAL PRIMARY KEY,
   first_name      VARCHAR(255) NOT NULL,
   last_name       VARCHAR(255) NOT NULL,
@@ -14,4 +14,4 @@ CREATE TABLE T_USER(
 
 # --- !Downs
 
-DROP TABLE T_USER;
+DROP TABLE T_ADMIN;

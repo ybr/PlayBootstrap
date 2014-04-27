@@ -8,13 +8,19 @@ case class UserCreate(
   firstName: String,
   lastName: String,
   email: String,
+  active: Boolean,
   creation: DateTime
 ) extends RequestCreate[User] {
-  def withId(id: Id): User = User(id, firstName, lastName, email, creation)
+  def withId(id: Id): User = User(id, firstName, lastName, email, active, creation)
 }
 
 case class UserUpdate(
   firstName: String,
   lastName: String,
-  email: String
+  email: String,
+  active: Boolean
 )
+
+object UserUpdate extends RequestUpdate[User, UserUpdate] {
+  def apply(u: User) = UserUpdate(u.firstName, u.lastName, u.email, u.active)
+}

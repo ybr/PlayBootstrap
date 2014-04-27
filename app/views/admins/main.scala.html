@@ -1,0 +1,3 @@
+@(title: String)(content: Html)(implicit me: Admin, flash: Flash)
+
+@mainMaybeAdmin(title)(content)(Some(me), flash)

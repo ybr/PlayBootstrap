@@ -1,7 +1,7 @@
-@(form: Form[(String, String, String, Password)])(implicit maybeMe: Option[User], flash: Flash)
+@(form: Form[(String, String, String, Password)])(implicit me: Admin, flash: Flash)
 
 @main("Sign up") {
-  <form action="@routes.Visitors.subscribe" method="POST">
+  <form action="@controllers.admins.routes.Admins.create" method="POST">
     <fieldset>
       <legend>Profile</legend>
       @helper.inputText(form("firstname"))
@@ -12,6 +12,6 @@
       @helper.inputText(form("email"))
       @helper.inputPassword(form("password"))
     </fieldset>
-    <button>Sign up</button>
+    <button>Create admin</button>
   </form>
 }

@@ -3,7 +3,7 @@ package services
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits._
 
-import ybr.log._
+import ybr.playground.log._
 
 import utils.credentials._
 import daos._
@@ -11,18 +11,18 @@ import models.requests._
 import models._
 import utils._
 
-object UserService extends Loggable {
+object UserService extends Logger {
   def userDAO: UserDAO = UserPostgreDAO
 
-  def create(request: UserCreate, login: String, password: String): Future[User] = {
-    log.debug("Creating ${request}...")
+  def create(request: UserCreate, login: String, password: Password): Future[User] = {
+    log.debug(s"Creating ${request} with login ${login} ...")
     val salt = SaltGeneratorUUID.generateSalt
     val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(password, salt)
 
     userDAO.create(request, login, hashedPassword, salt)
   }
 
-  def authenticate(login: String, password: String): Future[Option[User]] = {
+  def authenticate(login: String, password: Password): Future[Option[User]] = {
     log.debug(s"Authenticating user with login ${login} ...")
     for {
       maybeSalt <- userDAO.salt(login)
@@ -32,13 +32,18 @@ object UserService extends Loggable {
     } yield maybeUser
   }
 
-  def update(user: User, request: UserUpdate): Future[User] = {
+  def byLogin = userDAO.byLogin _
+  def byId = userDAO.byId _
+
+  def all = userDAO.all
+
+  def update(user: User, request: UserUpdate): Future[Option[User]] = {
     log.debug(s"Updating ${user} with ${request}...")
     userDAO.update(user, request)
   }
 
   // TODO use monad transformer future option
-  def updatePassword(login: String, oldPassword: String, newPassword: String): Future[Option[Unit]] = {
+  def updatePassword(login: String, oldPassword: Password, newPassword: Password): Future[Option[Unit]] = {
     log.debug(s"Updating password for login ${login}")
     for {
       maybeSalt <- userDAO.salt(login)

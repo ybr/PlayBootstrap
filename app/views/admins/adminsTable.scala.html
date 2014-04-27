@@ -1,0 +1,30 @@
+@(admins: Seq[Admin])(implicit me: Admin, flash: Flash)
+
+@main("List of admins") {
+  <a href="@controllers.admins.routes.Admins.createGet()">Create a new admin</a>
+  <table>
+    <caption>List of admins</caption>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>email</th>
+        <th>Active</th>
+        <th>Creation date</th>
+      </tr>
+    </thead>
+    <tbody>
+      @admins.map { admin =>
+      <tr>
+        <td><a href="@controllers.admins.routes.Admins.details(admin.id)">@{admin.id | id}</a></td>
+        <td>@admin.firstName</td>
+        <td>@admin.lastName</td>
+        <td>@admin.email</td>
+        <td>@{admin.active | bool}</td>
+        <td>@{admin.creation | datetime.short}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+}

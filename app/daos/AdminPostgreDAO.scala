@@ -6,8 +6,8 @@ import scala.language.postfixOps
 import anorm.SQL
 import anorm.SqlParser._
 
-import play.api.Play.current
 import play.api.db.DB
+import play.api.Play.current
 
 import models._
 import models.requests._
@@ -15,7 +15,7 @@ import models.exceptions._
 import utils.SqlParsers._
 import utils.SqlParsers.pg._
 
-object UserPostgreDAO extends UserDAO with PostgreDAO {
+object AdminPostgreDAO extends AdminDAO with PostgreDAO {
   val simple = id("id") ~
     str("first_name") ~
     str("last_name") ~
@@ -23,7 +23,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
     bool("active") ~
     joda.date("creation") map flatten
 
-  def create(request: UserCreate, login: String, password: String, salt: String): Future[User] = Future {
+  def create(request: AdminCreate, login: String, password: String, salt: String): Future[Admin] = Future {
     DB.withTransaction { implicit c =>
       val credentialsId = SQL("""
         INSERT INTO T_CREDENTIALS(login, password, salt, creation)
@@ -36,7 +36,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
       ).executeInsert().map(Id(_)).get
 
       SQL("""
-        INSERT INTO T_USER(first_name, last_name, email, creation, credentials_id)
+        INSERT INTO T_ADMIN(first_name, last_name, email, creation, credentials_id)
         VALUES ({firstName}, {lastName}, {email}, {creation}, {credentialsId})
       """).on(
         "firstName" -> request.firstName,
@@ -57,10 +57,10 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
     }
   })
 
-  def update(user: User, request: UserUpdate): Future[Option[User]] = Future {
+  def update(admin: Admin, request: AdminUpdate): Future[Option[Admin]] = Future {
     DB.withTransaction { implicit c =>
       SQL("""
-        UPDATE T_USER
+        UPDATE T_ADMIN
         SET
           first_name = {firstName},
           last_name = {lastName},
@@ -68,7 +68,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
           active = {active}
         WHERE id = {id}
       """).on(
-        "id" -> param(user.id),
+        "id" -> param(admin.id),
         "firstName" -> request.firstName,
         "lastName" -> request.lastName,
         "email" -> request.email,
@@ -76,24 +76,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
       ).executeUpdate
     }
   } flatMap { _ =>
-    byId(user.id)
-  }
-
-  def updatePassword(login: String, password: String, salt: String): Future[Option[Unit]] = Future {
-    DB.withTransaction { implicit c =>
-      val updates = SQL("""
-        UPDATE T_CREDENTIALS
-        SET
-          password = {password},
-          salt = {salt}
-        WHERE login = {login}
-      """).on(
-        "login" -> login,
-        "password" -> password,
-        "salt" -> salt
-      ).executeUpdate()
-      if(updates == 0) None else Some(())
-    }
+    byId(admin.id)
   }
 
   def salt(login: String): Future[Option[String]] = Future {
@@ -106,55 +89,55 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
     }
   }
 
-  def authenticate(login: String, password: String): Future[Option[User]] = Future {
+  def authenticate(login: String, password: String): Future[Option[Admin]] = Future {
     DB.withTransaction { implicit c =>
       SQL("""
         SELECT
-          u.*
+          a.*
         FROM
           T_CREDENTIALS c
-          INNER JOIN T_USER u ON u.credentials_id = c.id
+          INNER JOIN T_ADMIN a ON a.credentials_id = c.id
         WHERE
           c.login = {login}
           AND c.password = {password}
-          AND u.active
+          AND a.active
       """).on(
         "login" -> login,
         "password" -> password
-      ).as(simple.singleOpt.map(_.map(User.apply _ tupled)))
+      ).as(simple.singleOpt.map(_.map(Admin.apply _ tupled)))
     }
   }
 
-  def byLogin(login: String): Future[Option[User]] = Future {
+  def all(): Future[Seq[Admin]] = Future {
+    DB.withTransaction { implicit c =>
+      SQL("SELECT * FROM T_ADMIN").as(simple *).map(Admin.apply _ tupled)
+    }
+  }
+
+  def byLogin(login: String): Future[Option[Admin]] = Future {
     DB.withTransaction { implicit c =>
       SQL("""
         SELECT
-          u.*
+          a.*
         FROM
           T_CREDENTIALS c
-          INNER JOIN T_USER u ON u.credentials_id = c.id
+          INNER JOIN T_ADMIN a ON a.credentials_id = c.id
         WHERE c.login = {login}
       """).on(
         "login" -> login
-      ).as(simple.singleOpt.map(_.map(User.apply _ tupled)))
+      ).as(simple.singleOpt.map(_.map(Admin.apply _ tupled)))
     }
   }
 
-  def all(): Future[Seq[User]] = Future {
-    DB.withTransaction { implicit c =>
-      SQL("SELECT * FROM T_USER").as(simple *).map(User.apply _ tupled)
-    }
-  }
-
-  def byId(id: Id): Future[Option[User]] = Future {
+  def byId(id: Id): Future[Option[Admin]] = Future {
     DB.withTransaction { implicit c =>
       SQL("""
         SELECT *
-        FROM T_USER
+        FROM T_ADMIN
         WHERE id = {id}
       """).on(
         "id" -> param(id)
-      ).as(simple.singleOpt.map(_.map(User.apply _ tupled)))
+      ).as(simple.singleOpt.map(_.map(Admin.apply _ tupled)))
     }
   }
 }

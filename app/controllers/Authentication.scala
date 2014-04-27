@@ -10,19 +10,20 @@ import play.api.i18n._
 
 import play.api.libs.concurrent.Execution.Implicits._
 
-object Authentication extends UserController {
-  def userService = services.UserService
+import models._
+import utils.Mappings._
 
+object Authentication extends UserController {
   private val signinForm = Form(tuple(
     "email" -> email.verifying(maxLength(255)),
-    "password" -> nonEmptyText(maxLength = 255)
+    "password" -> nonEmptyText(maxLength = 255).password
   ))
 
   def signin() = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.signin(signinForm))
   }
 
-  def signout() = WithUser {
+  def signout() = Action {
     Redirect(routes.Visitors.home).withNewSession
   }
 
