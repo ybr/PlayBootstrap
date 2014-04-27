@@ -2,21 +2,23 @@ package utils.credentials
 
 import org.specs2.mutable._
 
+import models._
+
 object PasswordHasherSha512ToBase64Spec extends Specification {
   "PasswordHasherSha512ToBase64" should {
     "hash password" in {
-      val password = "my!Secret;Password?123§"
+      val password = Password("my!Secret;Password?123§")
       val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(password, "salt")
-      hashedPassword must not equalTo(password)
+      hashedPassword must not equalTo(password.neverLog(identity))
     }
 
     "hash password with a length of 88" in {
-      val hashedPassword = PasswordHasherSha512ToBase64.hashPassword("anyPwd", "salt")
+      val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(Password("anyPwd"), "salt")
       hashedPassword.length must equalTo(88)
     }
 
     "hash the same password differently with different salt" in {
-      val password = "my!Secret;Password?123§"
+      val password = Password("my!Secret;Password?123§")
       val salt0 = "salt0"
       val salt1 = "salt1"
 
@@ -27,7 +29,7 @@ object PasswordHasherSha512ToBase64Spec extends Specification {
     }
 
     "hash the same password with same salt the same way" in {
-      val password = "my!Secret;Password?123§"
+      val password = Password("my!Secret;Password?123§")
       val salt = "salt"
 
       val hashed0 = PasswordHasherSha512ToBase64.hashPassword(password, salt)
