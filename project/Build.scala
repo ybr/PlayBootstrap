@@ -11,7 +11,9 @@ object ApplicationBuild extends Build {
       anorm,
       "postgresql" % "postgresql" % "9.1-901.jdbc4",
       "commons-codec" % "commons-codec" % "1.9",
-      "com.typesafe" %% "play-plugins-mailer" % "2.2.0"
+      "com.typesafe" %% "play-plugins-mailer" % "2.2.0",
+      "org.reactivemongo" %% "reactivemongo" % "0.10.0",
+      "org.reactivemongo" %% "play2-reactivemongo" % "0.10.2"
     ),
     scalacOptions += "-feature",
     routesImport ++= Seq("_root_.utils.binders._", "models._"),

@@ -19,7 +19,7 @@ import models.requests._
 import utils._
 import utils.Mappings._
 
-object Visitors extends UserController {
+class Visitors extends UserController {
   def home() = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.home())
   }
@@ -41,7 +41,7 @@ object Visitors extends UserController {
       signupData => {
         val (firstName, lastName, email, password) = signupData
         userService.create(UserCreate(firstName, lastName, email, true, DateTime.now), email, password) map { _ =>
-          Redirect(routes.Authentication.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
+          Redirect(Controllers.routes.Authentication.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
         } recover {
           case AccountAlreadyExistsException(login, _) =>
             implicit val flash = Flash(Map("error" -> Messages("flash.visitors.alreadyExists", login)))

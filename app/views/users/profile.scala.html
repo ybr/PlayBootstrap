@@ -1,16 +1,16 @@
-@(form: Form[Users.UpdateForm])(implicit me: User, flash: Flash)
+@(form: Form[UserUpdateForm])(implicit me: User, flash: Flash)
 
 @main("My profile") {
   <h1>My profile</h1>
 
-  <form action="@routes.Users.profileUpdate" method="POST">
+  <form action="@Controllers.routes.Users.profileUpdate" method="POST">
     <fieldset>
       <legend>Profile</legend>
       @helper.inputText(form("firstname"))
       @helper.inputText(form("lastname"))
       @helper.inputText(form("email"))
     </fieldset>
-    <a href="@routes.Users.home" rel="prev">Back</a>
+    <a href="@Controllers.routes.Users.home" rel="prev">Back</a>
     <button type="submit">Update</button>
   </form>
 }
