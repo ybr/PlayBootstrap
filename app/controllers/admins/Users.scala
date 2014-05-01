@@ -11,12 +11,11 @@ import play.api.libs.concurrent.Execution.Implicits._
 import models._
 import models.requests._
 import services._
+import App.Daos._
 
 object Users extends AdminController {
-  def userService: UserService = new UserService
-
   def all = WithAdmin.async { implicit request =>
-    userService.all map { users =>
+    UserService.all map { users =>
       Ok(views.html.admins.usersTable(users))
     }
   }
@@ -26,7 +25,7 @@ object Users extends AdminController {
   ))
 
   def details(id: Id) = WithAdmin.async { implicit request =>
-    userService.byId(id) map {
+    UserService.byId(id) map {
       case Some(user) => Ok(views.html.admins.userDetails(activeForm.fill(user.active), user))
       case None => NotFound(views.html.admins.notfound("The user can not be found"))
     }
@@ -34,10 +33,10 @@ object Users extends AdminController {
 
   // TODO eventually use a monad transformer
   def update(id: Id) = WithAdmin.async { implicit request =>
-    userService.byId(id) flatMap {
+    UserService.byId(id) flatMap {
       case Some(user) => activeForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(views.html.admins.userDetails(activeForm.fill(user.active), user))),
-        active => userService.update(user, UserUpdate.from(user).copy(active = active)) map {
+        active => UserService.update(user, UserUpdate.from(user).copy(active = active)) map {
           case Some(updatedUser) => Redirect(controllers.admins.routes.Users.all).flashing("success" -> Messages("flash.admin.users.update", updatedUser.firstName, updatedUser.lastName))
           case None => NotFound(views.html.admins.notfound("The user can not be found"))
         }

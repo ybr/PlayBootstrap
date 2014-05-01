@@ -5,18 +5,18 @@ import play.api.mvc.{ QueryStringBindable, PathBindable }
 import models._
 
 package object binders {
-  implicit val bindersIdProvider = new IdProvider[Long] {
-    def toId(l: Long) = new Id {
-      val value = l.toString
+  implicit val bindersIdProvider = new IdProvider[String] {
+    def toId(s: String) = new Id {
+      val value = s
     }
   }
 
   implicit object queryStringBindableId extends QueryStringBindable.Parsing[Id](
-    s => Id(java.lang.Long.parseLong(s)), _.value.toString, (key: String, e: Exception) => s"Cannot parse parameter $key as Id: $e"
+    s => Id(s), _.value.toString, (key: String, e: Exception) => s"Cannot parse parameter $key as Id: $e"
   )
 
   implicit object pathBindableId extends PathBindable.Parsing[Id](
-    s => Id(java.lang.Long.parseLong(s)), _.value.toString, (key: String, e: Exception) => s"Cannot parse parameter $key as Id: $e"
+    s => Id(s), _.value.toString, (key: String, e: Exception) => s"Cannot parse parameter $key as Id: $e"
   )
 
 }

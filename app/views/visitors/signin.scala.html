@@ -1,7 +1,7 @@
 @(form: Form[(String, Password)])(implicit maybeMe: Option[User], flash: Flash)
 
 @main("Sign in") {
-  <form action="@Controllers.routes.Authentication.authenticate" method="POST">
+  <form action="@routes.Authentication.authenticate" method="POST">
     <fieldset>
       <legend>Sign in</legend>
       @helper.inputText(form("email"))
@@ -9,5 +9,5 @@
     </fieldset>
     <button>Sign in</button>
   </form>
-  <a href="@Controllers.routes.Visitors.signup">Sign up</a>
+  <a href="@routes.Visitors.signup">Sign up</a>
 }

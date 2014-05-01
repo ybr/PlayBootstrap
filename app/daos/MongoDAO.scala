@@ -33,7 +33,8 @@ trait MongoDAO extends DAO {
   val _id: JsValue => JsValue = json => (__.json.update((__ \ "_id").json.copyFrom((__ \ "id").json.pick)) andThen (__ \ "id").json.prune).reads(json).get
 
   // transforms an identifiable to a js value
-  def _id(identifiable: Identifiable): JsValue = Json.obj("_id" -> Json.obj("$oid" -> identifiable.id.value))
+  def _id(identifiable: Identifiable): JsValue = _id(identifiable.id)
+  def _id(id: Id): JsValue = Json.obj("_id" -> Json.obj("$oid" -> id.value))
 }
 
 case class MongoException(error: String, code: Int, message: String) extends Exception(error)

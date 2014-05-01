@@ -1,17 +1,17 @@
-GET     /                   Controllers.Visitors.home
+GET     /                   controllers.Visitors.home
 
-GET     /signup             Controllers.Visitors.signup
-POST    /signup             Controllers.Visitors.subscribe
+GET     /signup             controllers.Visitors.signup
+POST    /signup             controllers.Visitors.subscribe
 
-GET     /signin             Controllers.Authentication.signin
-GET     /signout            Controllers.Authentication.signout
-POST    /authenticate       Controllers.Authentication.authenticate
+GET     /signin             controllers.Authentication.signin
+GET     /signout            controllers.Authentication.signout
+POST    /authenticate       controllers.Authentication.authenticate
 
-GET     /me                 Controllers.Users.home
-GET     /me/profile         Controllers.Users.profile
-POST    /me/profile         Controllers.Users.profileUpdate
-GET     /me/password        Controllers.Users.password
-POST    /me/password        Controllers.Users.passwordUpdate
+GET     /me                 controllers.Users.home
+GET     /me/profile         controllers.Users.profile
+POST    /me/profile         controllers.Users.profileUpdate
+GET     /me/password        controllers.Users.password
+POST    /me/password        controllers.Users.passwordUpdate
 
 GET     /admin              controllers.admins.Admins.home
 

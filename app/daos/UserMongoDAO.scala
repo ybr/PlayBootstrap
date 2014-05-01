@@ -19,19 +19,21 @@ import models.exceptions._
 object UserMongoDAO extends UserDAO with MongoDAO with Logger {
   private val collection = ReactiveMongoPlugin.db.collection[JSONCollection]("users")
 
-  implicit val userWrites = Json.writes[User].transform(_id)
-  implicit val userReads = Json.reads[User].compose(id)
   implicit val userUpdateWrites = Json.writes[UserUpdate]
+  implicit val userFormat = Format[User](
+    Json.reads.compose(id),
+    Json.writes.transform(_id)
+  )
 
   def create(request: UserCreate, login: String, password: String, salt: String): Future[User] = {
     val id = Id(BSONObjectID.generate)
     val user = request.withId(id)
-    collection.insert {
+    collection.insert(
       Json.toJson(user).as[JsObject] +
         ("login" -> JsString(login)) +
         ("password" -> JsString(password)) +
         ("salt" -> JsString(salt))
-    } map (_ => user) transform(identity, {
+    ).map(_ => user).transform(identity, {
       case x@LastError(_, _, Some(unique_violation), _, _, _, _) => AccountAlreadyExistsException(login, x)
     })
   }
@@ -57,8 +59,13 @@ object UserMongoDAO extends UserDAO with MongoDAO with Logger {
   def salt(login: String): Future[Option[String]] = {
     log.debug(s"Salt for ${login}")
     collection.find(
-      Json.obj("login" -> login), Json.obj("salt" -> 1)
-    ).one[JsValue].map(_.flatMap(js => (js \ "salt").asOpt[String]))
+      Json.obj("login" -> login),
+      Json.obj("salt" -> 1)
+    )
+    .one[JsValue]
+    .map(_.flatMap { js =>
+      (js \ "salt").asOpt[String]
+    })
   }
 
   def authenticate(login: String, password: String): Future[Option[User]] = collection.find(
@@ -73,5 +80,5 @@ object UserMongoDAO extends UserDAO with MongoDAO with Logger {
 
   def all(): Future[Seq[User]] = collection.find(Json.obj()).cursor[User].collect[Seq]()
 
-  def byId(id: Id): Future[Option[User]] = collection.find(id).one[User]
+  def byId(id: Id): Future[Option[User]] = collection.find(_id(id)).one[User]
 }

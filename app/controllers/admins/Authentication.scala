@@ -12,6 +12,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 import services._
 import utils.Mappings._
+import App.Daos._
 
 object Authentication extends AdminController {
   private val signinForm = Form(tuple(
@@ -32,7 +33,7 @@ object Authentication extends AdminController {
       formWithErrors => Future.successful(BadRequest(views.html.admins.signin(formWithErrors))),
       signinData => {
         val (login, password) = signinData
-        adminService.authenticate(login, password) map {
+        AdminService.authenticate(login, password) map {
           case Some(admin) => Redirect(routes.Admins.home).withSession("admin" -> login)
           case None => {
             implicit val flash = Flash(Map("error" -> Messages("flash.admins.credentialsUnknown")))

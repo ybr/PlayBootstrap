@@ -18,14 +18,15 @@ import models.requests._
 import models.exceptions._
 import services._
 import utils.Mappings._
+import App.Daos._
 
 object Admins extends AdminController with Logger {
-  def home() = WithAdmin { implicit request =>
+  def home = WithAdmin { implicit request =>
     Ok(views.html.admins.home())
   }
 
   def all = WithAdmin.async { implicit request =>
-    adminService.all map { admins =>
+    AdminService.all map { admins =>
       Ok(views.html.admins.adminsTable(admins))
     }
   }
@@ -35,7 +36,7 @@ object Admins extends AdminController with Logger {
   ))
 
   def details(id: Id) = WithAdmin.async { implicit request =>
-    adminService.byId(id).map {
+    AdminService.byId(id).map {
       case Some(admin) => Ok(views.html.admins.adminDetails(activeForm.fill(admin.active), admin))
       case None => NotFound(views.html.admins.notfound("The admin can not be found"))
     }
@@ -43,10 +44,10 @@ object Admins extends AdminController with Logger {
 
   // TODO eventually use a monad transformer
   def update(id: Id) = WithAdmin.async { implicit request =>
-    adminService.byId(id) flatMap {
+    AdminService.byId(id) flatMap {
       case Some(admin) => activeForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(views.html.admins.adminDetails(formWithErrors, admin))),
-        active => adminService.update(admin, AdminUpdate.from(admin).copy(active = active)) map {
+        active => AdminService.update(admin, AdminUpdate.from(admin).copy(active = active)) map {
           case Some(updatedAdmin) => Redirect(controllers.admins.routes.Admins.all).flashing("success" -> Messages("flash.admin.admins.update", updatedAdmin.firstName, updatedAdmin.lastName))
           case None => NotFound(views.html.admins.notfound("The admin can not be found"))
         }
@@ -71,7 +72,7 @@ object Admins extends AdminController with Logger {
       formWithErrors => Future.successful(BadRequest(views.html.admins.adminCreate(formWithErrors))),
       creationData => {
         val (firstName, lastName, email, password) = creationData
-        adminService.create(AdminCreate(firstName, lastName, email, true, DateTime.now), email, password, me) map { admin =>
+        AdminService.create(AdminCreate(firstName, lastName, email, true, DateTime.now), email, password, me) map { admin =>
           Redirect(controllers.admins.routes.Admins.all).flashing("success" -> Messages("flash.admin.admins.create", admin.firstName, admin.lastName))
         } recover {
           case AccountAlreadyExistsException(login, _) =>
@@ -82,15 +83,15 @@ object Admins extends AdminController with Logger {
     )
   }
 
-  def default() = Action.async {
+  def default = Action.async {
     log.info("Existing admin ?")
     for {
-      count <- adminService.all.map(_.length)
+      count <- AdminService.all.map(_.length)
       result <- {
         log.info(s"Found ${count} admin(s)")
         count match {
           case 0 =>
-            adminService.create(
+            AdminService.create(
               AdminCreate("admin", "admin", "admin@domain.com", true, DateTime.now), "admin", Password("changeme"),
               Admin(new Id { val value = "inexistant" }, "inexistant", "inexistant", "inexistant@domain.com", false, DateTime.now)
             ) map { _ =>

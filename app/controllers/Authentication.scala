@@ -12,8 +12,10 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 import models._
 import utils.Mappings._
+import services._
+import App.Daos._
 
-class Authentication extends UserController {
+object Authentication extends UserController {
   private val signinForm = Form(tuple(
     "email" -> email.verifying(maxLength(255)),
     "password" -> nonEmptyText(maxLength = 255).password
@@ -24,7 +26,7 @@ class Authentication extends UserController {
   }
 
   def signout() = Action {
-    Redirect(Controllers.routes.Visitors.home).withNewSession
+    Redirect(routes.Visitors.home).withNewSession
   }
 
   def authenticate() = WithMaybeUser.async { implicit request =>
@@ -32,8 +34,8 @@ class Authentication extends UserController {
       formWithErrors => Future.successful(BadRequest(views.html.visitors.signin(formWithErrors))),
       signinData => {
         val (email, password) = signinData
-        userService.authenticate(email, password) map {
-          case Some(user) => Redirect(Controllers.routes.Users.home).withSession("login" -> email)
+        UserService.authenticate(email, password) map {
+          case Some(user) => Redirect(routes.Users.home).withSession("login" -> email)
           case None => {
             implicit val flash = Flash(Map("error" -> Messages("flash.visitors.credentialsUnknown")))
             Unauthorized(views.html.visitors.signin(signinForm.fill(signinData)))

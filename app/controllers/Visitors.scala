@@ -18,9 +18,11 @@ import models.exceptions._
 import models.requests._
 import utils._
 import utils.Mappings._
+import services._
+import App.Daos._
 
-class Visitors extends UserController {
-  def home() = WithMaybeUser { implicit request =>
+object Visitors extends UserController {
+  def home = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.home())
   }
 
@@ -31,17 +33,17 @@ class Visitors extends UserController {
     "password" -> nonEmptyText(maxLength = 255).password
   ))
 
-  def signup() = WithMaybeUser { implicit request =>
+  def signup = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.signup(signupForm))
   }
 
-  def subscribe() = WithMaybeUser.async { implicit request =>
+  def subscribe = WithMaybeUser.async { implicit request =>
     signupForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.visitors.signup(formWithErrors))),
       signupData => {
         val (firstName, lastName, email, password) = signupData
-        userService.create(UserCreate(firstName, lastName, email, true, DateTime.now), email, password) map { _ =>
-          Redirect(Controllers.routes.Authentication.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
+        UserService.create(UserCreate(firstName, lastName, email, true, DateTime.now), email, password) map { _ =>
+          Redirect(routes.Authentication.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
         } recover {
           case AccountAlreadyExistsException(login, _) =>
             implicit val flash = Flash(Map("error" -> Messages("flash.visitors.alreadyExists", login)))

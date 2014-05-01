@@ -12,9 +12,7 @@ import models._
 import utils._
 
 object UserService extends Logger {
-  def userDAO: UserDAO = UserPostgreDAO
-
-  def create(request: UserCreate, login: String, password: Password): Future[User] = {
+  def create(request: UserCreate, login: String, password: Password)(implicit userDAO: UserDAO): Future[User] = {
     log.debug(s"Creating ${request} with login ${login} ...")
     val salt = SaltGeneratorUUID.generateSalt
     val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(password, salt)
@@ -22,7 +20,7 @@ object UserService extends Logger {
     userDAO.create(request, login, hashedPassword, salt)
   }
 
-  def authenticate(login: String, password: Password): Future[Option[User]] = {
+  def authenticate(login: String, password: Password)(implicit userDAO: UserDAO): Future[Option[User]] = {
     log.debug(s"Authenticating user with login ${login} ...")
     for {
       maybeSalt <- userDAO.salt(login)
@@ -32,18 +30,18 @@ object UserService extends Logger {
     } yield maybeUser
   }
 
-  def byLogin = userDAO.byLogin _
-  def byId = userDAO.byId _
+  def byLogin(login: String)(implicit userDAO: UserDAO) = userDAO.byLogin(login)
+  def byId(id: Id)(implicit userDAO: UserDAO) = userDAO.byId(id)
 
-  def all = userDAO.all
+  def all(implicit userDAO: UserDAO) = userDAO.all
 
-  def update(user: User, request: UserUpdate): Future[Option[User]] = {
+  def update(user: User, request: UserUpdate)(implicit userDAO: UserDAO): Future[Option[User]] = {
     log.debug(s"Updating ${user} with ${request}...")
     userDAO.update(user, request)
   }
 
   // TODO use monad transformer future option
-  def updatePassword(login: String, oldPassword: Password, newPassword: Password): Future[Option[Unit]] = {
+  def updatePassword(login: String, oldPassword: Password, newPassword: Password)(implicit userDAO: UserDAO): Future[Option[Unit]] = {
     log.debug(s"Updating password for login ${login}")
     for {
       maybeSalt <- userDAO.salt(login)
