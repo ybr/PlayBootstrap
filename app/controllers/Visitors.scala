@@ -11,6 +11,7 @@ import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n._
 
+import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
 
 import models._
@@ -22,6 +23,19 @@ import utils.Mappings._
 object Visitors extends UserController {
   def home() = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.home())
+  }
+
+  val localeForm = Form(single(
+    "locale" -> nonEmptyText
+  ))
+  def locale(maybeRedirectURL: Option[String]) = WithMaybeUser { implicit request =>
+    localeForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.visitors.error(Some("We can not change your locale"))),
+      locale => {
+        val redirectURL = maybeRedirectURL orElse request.headers.get("Referer") getOrElse routes.Visitors.home.absoluteURL()
+        Redirect(redirectURL).withCookies(Cookie(Play.langCookieName, locale))
+      }
+    )
   }
 
   private val signupForm = Form(tuple(

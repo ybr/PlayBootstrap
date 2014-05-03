@@ -1,0 +1,18 @@
+email=Email
+home=Accueil
+locale=Langue
+password=Mot de passe
+signin=Connexion
+signout=Déconnexion
+signup=Inscription
+
+views.visitors.home=Ceci est la première page
+views.visitors.locale.change=Changer
+views.visitors.locale.chooseLocale=Choisissez une langue
+
+constraint.email=Email
+constraint.maxLength=Taille maximum : {0}
+constraint.required=Requis
+
+error.email=Email valide requis
+error.required=Ce champ est requis

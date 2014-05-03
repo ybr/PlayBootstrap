@@ -1,6 +1,9 @@
 email=Email
 password=Password
 newpassword=New password
+home=Home
+signin=Sign in
+signout=Sign out
 
 flash.visitors.alreadyExists=This account already exists
 flash.visitors.credentialsUnknown=This account is unknown, please check both your email and password
@@ -16,3 +19,11 @@ flash.admins.alreadyExists=This account already exists
 flash.admins.credentialsUnknown=This account is unknown, please check both your email and password
 
 error.password=Wrong password
+
+locale=Locale
+locale.en=English
+locale.fr=Français
+
+views.visitors.home=This is the first page
+views.visitors.locale.change=Change
+views.visitors.locale.chooseLocale=Choose a locale

@@ -1,5 +1,5 @@
-@()(implicit maybeMe: Option[User], flash: Flash)
+@(msg: Option[String] = None)(implicit maybeMe: Option[User], flash: Flash)
 
 @main("Oops") {
-  <div class="oops">An unexpected error has occured</div>
+  <div class="oops">@msg.getOrElse("An unexpected error has occured")</div>
 }
