@@ -6,8 +6,8 @@ import play.api.mvc.Results._
 
 import models._
 
-object Global extends GlobalSettings {
+object Global extends GlobalSettings with Controller {
   override def onError(req: RequestHeader, x: Throwable) = {
-    Future.successful(InternalServerError(views.html.visitors.error()(None, Flash())))
+    Future.successful(InternalServerError(views.html.visitors.error()(None, Flash(), lang(req))))
   }
 }

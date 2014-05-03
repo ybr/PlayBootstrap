@@ -1,12 +1,27 @@
+back=Back
+credentials=Credentials
 email=Email
-password=Password
-newpassword=New password
+firstname=Firstname
 home=Home
+lastname=Lastname
+locale=Locale
+login=Login
+newpassword=New password
+password=Password
+profile=Profile
 signin=Sign in
 signout=Sign out
+signup=Sign up
+update=Update
+
+error.password=Wrong password
+error.unexpected=An unexpected error has occured
+
+locale.en=English
+locale.fr=Français
 
 flash.visitors.alreadyExists=This account already exists
-flash.visitors.credentialsUnknown=This account is unknown, please check both your email and password
+flash.visitors.credentialsUnknown=This account is unknown, please check both your login and password
 flash.visitors.subscribe=Your account has been successfully created
 
 flash.users.password.update=Your password has been successfully updated
@@ -16,13 +31,14 @@ flash.admin.admins.create=The admin {0} {1} has been successfully created
 flash.admin.admins.update=The admin {0} {1} has been successfully updated
 flash.admin.users.update=The user {0} {1} has been successfully updated
 flash.admins.alreadyExists=This account already exists
-flash.admins.credentialsUnknown=This account is unknown, please check both your email and password
+flash.admins.credentialsUnknown=This account is unknown, please check both your login and password
 
-error.password=Wrong password
-
-locale=Locale
-locale.en=English
-locale.fr=Français
+views.users.home.modifyPassword=Modify my password
+views.users.home.modifyProfile=Modify my profile
+views.users.home.yourArea=Your area
+views.users.home.yourProfile=Your profile
+views.users.password.modifyPassword=Modify my password
+views.users.profile.myProfile=My profile
 
 views.visitors.home=This is the first page
 views.visitors.locale.change=Change

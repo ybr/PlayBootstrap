@@ -1,14 +1,18 @@
+back=Retour
+credentials=Identifiants
 email=Email
+firstname=Prénom
 home=Accueil
+lastname=Nom
 locale=Langue
+login=Identifiant
+newpassword=Nouveau mot de passe
 password=Mot de passe
+profile=Profil
 signin=Connexion
 signout=Déconnexion
 signup=Inscription
-
-views.visitors.home=Ceci est la première page
-views.visitors.locale.change=Changer
-views.visitors.locale.chooseLocale=Choisissez une langue
+update=Modifier
 
 constraint.email=Email
 constraint.maxLength=Taille maximum : {0}
@@ -16,3 +20,29 @@ constraint.required=Requis
 
 error.email=Email valide requis
 error.required=Ce champ est requis
+error.password=Mauvais mot de passe
+error.unexpected=Une erreur non prévue s'est produite
+
+flash.visitors.alreadyExists=Ce compte existe déjà
+flash.visitors.credentialsUnknown=Ce compte est inconnu, veuillez vérifier votre login et mot de passe
+flash.visitors.subscribe=Votre compte a été créé avec succès
+
+flash.users.password.update=Votre mot de passe a été modifié avec succès
+flash.users.profile.update=Votre profil a été modifié avec succès
+
+flash.admin.admins.create=L'administrateur {0} {1} a été créé avec succès
+flash.admin.admins.update=L'administrateur {0} {1} a été modifié avec succès
+flash.admin.users.update=L'utilisateur {0} {1} a été modifié avec succès
+flash.admins.alreadyExists=Ce compte existe déjà
+flash.admins.credentialsUnknown=Ce compte est inconnu, veuillez vérifier votre login et mot de passe
+
+views.users.home.modifyPassword=Modifier mon mot de passe
+views.users.home.modifyProfile=Modifier mon profil
+views.users.home.yourArea=Votre espace
+views.users.home.yourProfile=Votre profil
+views.users.password.modifyPassword=Modifier mon mot de passe
+views.users.profile.myProfile=Mon profil
+
+views.visitors.home=Ceci est la première page
+views.visitors.locale.change=Changer
+views.visitors.locale.chooseLocale=Choisissez une langue
