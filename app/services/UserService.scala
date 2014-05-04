@@ -1,7 +1,12 @@
 package services
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits._
+
+import play.api.Play._
+import play.api.i18n._
+import play.api.libs.concurrent.Execution.Implicits._
+
+import com.typesafe.plugin._
 
 import ybr.playground.log._
 
@@ -14,12 +19,20 @@ import utils._
 object UserService extends Logger {
   def userDAO: UserDAO = UserPostgreDAO
 
-  def create(request: UserCreate, login: String, password: Password): Future[User] = {
+  def create(request: UserCreate, login: String, password: Password)(implicit lang: Lang): Future[User] = {
     log.debug(s"Creating ${request} with login ${login} ...")
     val salt = SaltGeneratorUUID.generateSalt
     val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(password, salt)
 
-    userDAO.create(request, login, hashedPassword, salt)
+    userDAO.create(request, login, hashedPassword, salt) map { user =>
+      val mail = use[MailerPlugin].email
+      mail.setSubject(Messages("emails.users.create.subject", user))
+      mail.setRecipient(request.email)
+      mail.setFrom(configuration.getString("email.from").getOrElse("noreply@unknown.com"))
+      mail.sendHtml(views.html.emails.users.create(user, login, password).body)
+
+      user
+    }
   }
 
   def authenticate(login: String, password: Password): Future[Option[User]] = {

@@ -22,6 +22,18 @@ status=Statut
 update=Update
 users=Users
 
+emails.admins.create.subject=Creation of your admin account
+emails.admins.create.header=Dear {0}
+emails.admins.create.created=Your admin account has been created by {0}
+emails.admins.create.credentials=You can connect with the following credentials:
+emails.admins.create.footer=Welcome to you
+
+emails.users.create.subject=Creation of your account
+emails.users.create.header=Dear {0}
+emails.users.create.created=Your account has been created
+emails.users.create.credentials=You can connect with the following credentials:
+emails.users.create.footer=Welcome to you
+
 error.password=Wrong password
 error.unexpected=An unexpected error has occured
 

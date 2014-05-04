@@ -1,21 +1,21 @@
-@(createdAdmin: Admin, login: String, password: Password, creator: Admin)
+@(createdAdmin: Admin, login: String, password: Password, creator: Admin)(implicit lang: Lang)
 
 <html>
 <head>
-  <title>Creation of your admin account</title>
+  <title>@Messages("emails.admins.create.subject")</title>
 </head>
 <body>
-  <header>Dear @{createdAdmin | fullname}</header>
-  <p>Your admin account has been created by @{creator | fullname}</p>
+  <header>@Messages("emails.admins.create.header", createdAdmin | fullname)</header>
+  <p>@Messages("emails.admins.create.created", creator | fullname)</p>
   <p>
-    You can connect with the following credentials:
+    @Messages("emails.admins.create.credentials")
     <dl>
-      <dt>Login</dt>
+      <dt>@Messages("login")</dt>
       <dd>@login</dd>
-      <dt>Password</dt>
+      <dt>@Messages("password")</dt>
       <dd>@{password.neverLog(identity)}</dd>
     </dl>
   </p>
-  <footer>Welcome to you</footer>
+  <footer>@Messages("emails.admins.create.footer")</footer>
 </body>
 </html>
