@@ -1,4 +1,10 @@
+active=Actif
+admins=Administrateurs
 back=Retour
+boolean.true=Oui
+boolean.false=Non
+create=Créer
+creationDate=Date de création
 credentials=Identifiants
 email=Email
 firstname=Prénom
@@ -7,21 +13,26 @@ lastname=Nom
 locale=Langue
 login=Identifiant
 newpassword=Nouveau mot de passe
+oops=Oops
 password=Mot de passe
 profile=Profil
 signin=Connexion
 signout=Déconnexion
 signup=Inscription
 update=Modifier
+users=Utilisateurs
 
 constraint.email=Email
 constraint.maxLength=Taille maximum : {0}
 constraint.required=Requis
+format.boolean=Format booléen
 
 error.email=Email valide requis
 error.required=Ce champ est requis
 error.password=Mauvais mot de passe
-error.unexpected=Une erreur non prévue s'est produite
+error.unexpected=Une erreur non prévue s''est produite
+
+locale.notChanged=La langue ne peut pas être modifiée
 
 flash.visitors.alreadyExists=Ce compte existe déjà
 flash.visitors.credentialsUnknown=Ce compte est inconnu, veuillez vérifier votre login et mot de passe
@@ -30,11 +41,23 @@ flash.visitors.subscribe=Votre compte a été créé avec succès
 flash.users.password.update=Votre mot de passe a été modifié avec succès
 flash.users.profile.update=Votre profil a été modifié avec succès
 
-flash.admin.admins.create=L'administrateur {0} {1} a été créé avec succès
-flash.admin.admins.update=L'administrateur {0} {1} a été modifié avec succès
-flash.admin.users.update=L'utilisateur {0} {1} a été modifié avec succès
+flash.admin.admins.create=L''administrateur {0} {1} a été créé avec succès
+flash.admin.admins.update=L''administrateur {0} {1} a été modifié avec succès
+flash.admin.users.update=L''utilisateur {0} {1} a été modifié avec succès
 flash.admins.alreadyExists=Ce compte existe déjà
 flash.admins.credentialsUnknown=Ce compte est inconnu, veuillez vérifier votre login et mot de passe
+
+views.admins.adminCreate=Création d''un administrateur
+views.admins.adminDetails=Détails de l''administrateur {0}
+views.admins.adminsTable.createAdmin=Créer un nouvel administrateur
+views.admins.adminsTable.list=Liste des administrateurs
+views.admins.home=Accueil administrateur
+views.admins.locale.chooseLocale=Choisissez une langue
+views.admins.mainMaybeAdmin=ADMIN - {0}
+views.admins.nofound=La page est introuvable
+views.admins.userDetails=Détails de l''utilisateur {0}
+views.admins.usersTable.list=Liste des utilisateurs
+views.admins.usersTable.noUser=Aucun utilisateur trouvé
 
 views.users.home.modifyPassword=Modifier mon mot de passe
 views.users.home.modifyProfile=Modifier mon profil
@@ -44,5 +67,4 @@ views.users.password.modifyPassword=Modifier mon mot de passe
 views.users.profile.myProfile=Mon profil
 
 views.visitors.home=Ceci est la première page
-views.visitors.locale.change=Changer
 views.visitors.locale.chooseLocale=Choisissez une langue

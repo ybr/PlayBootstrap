@@ -15,6 +15,7 @@ GET     /me/password        controllers.Users.password
 POST    /me/password        controllers.Users.passwordUpdate
 
 GET     /admin              controllers.admins.Admins.home
+GET     /admin/locale       controllers.admins.Admins.locale(redirect_uri: Option[String] ?= None)
 
 GET     /admin/signin       controllers.admins.Authentication.signin
 POST    /admin/signin       controllers.admins.Authentication.authenticate

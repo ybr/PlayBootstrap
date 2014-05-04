@@ -5,13 +5,13 @@ import scala.concurrent.Future
 import org.joda.time._
 
 import play.api._
+import play.api.Play.current
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.i18n._
 
-import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
 
 import models._
@@ -29,12 +29,10 @@ object Visitors extends UserController {
     "locale" -> nonEmptyText
   ))
   def locale(maybeRedirectURL: Option[String]) = WithMaybeUser { implicit request =>
+    val redirectURL = maybeRedirectURL orElse request.headers.get("Referer") getOrElse routes.Visitors.home.absoluteURL()
     localeForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.visitors.error(Some("We can not change your locale"))),
-      locale => {
-        val redirectURL = maybeRedirectURL orElse request.headers.get("Referer") getOrElse routes.Visitors.home.absoluteURL()
-        Redirect(redirectURL).withCookies(Cookie(Play.langCookieName, locale))
-      }
+      formWithErrors => Redirect(redirectURL).flashing("error" -> Messages("locale.notChanged")),
+      locale => Redirect(redirectURL).withCookies(Cookie(Play.langCookieName, locale))
     )
   }
 

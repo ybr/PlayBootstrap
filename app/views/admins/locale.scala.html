@@ -1,0 +1,14 @@
+@()(implicit lang: Lang)
+
+@import play.api.Play.current
+
+@form = @{controllers.admins.Admins.localeForm.fill(s"${lang.toLocale}")}
+@locales = @{Lang.availables.map(lang => lang.toLocale.toString -> Messages(s"locale.${lang.toLocale}"))}
+
+@helper.form(controllers.admins.routes.Admins.locale()) {
+  <fieldset>
+    <legend>@Messages("locale")</legend>
+    @helper.select(form("locale"), locales, '_label -> Messages("views.admins.locale.chooseLocale"))
+    <button>@Messages("update")</button>
+  </fieldset>
+}
