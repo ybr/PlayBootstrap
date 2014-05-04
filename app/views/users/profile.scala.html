@@ -3,7 +3,7 @@
 @main(Messages("views.users.profile.myProfile")) {
   <h1>@Messages("views.users.profile.myProfile")</h1>
 
-  <form action="@routes.Users.profileUpdate" method="POST">
+  @helper.form(routes.Users.profileUpdate) {
     <fieldset>
       <legend>@Messages("profile")</legend>
       @helper.inputText(form("firstname"))
@@ -12,5 +12,5 @@
     </fieldset>
     <a href="@routes.Users.home" rel="prev">@Messages("back")</a>
     <button type="submit">@Messages("update")</button>
-  </form>
+  }
 }
