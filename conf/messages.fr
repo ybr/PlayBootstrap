@@ -33,6 +33,12 @@ emails.admins.create.created=Votre compte administrateur a été créé par {0}
 emails.admins.create.credentials=Vous pouvez vous connecter avec les identifiants suivants :
 emails.admins.create.footer=Bienvenue
 
+emails.users.create.subject=Création de votre compte
+emails.users.create.header=Bonjour {0}
+emails.users.create.created=Votre compte a été créé
+emails.users.create.credentials=Vous pouvez vous connecter avec les identifiants suivants :
+emails.users.create.footer=Bienvenue
+
 error.email=Email valide requis
 error.required=Ce champ est requis
 error.password=Mauvais mot de passe
