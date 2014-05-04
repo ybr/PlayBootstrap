@@ -3,6 +3,7 @@ package services
 import scala.concurrent.Future
 
 import play.api.Play._
+import play.api.i18n._
 import play.api.libs.concurrent.Execution.Implicits._
 
 import com.typesafe.plugin._
@@ -18,7 +19,7 @@ import utils.credentials._
 object AdminService extends Logger {
   def adminDAO: AdminDAO = AdminPostgreDAO
 
-  def create(request: AdminCreate, login: String, password: Password, creator: Admin): Future[Admin] = {
+  def create(request: AdminCreate, login: String, password: Password, creator: Admin)(implicit lang: Lang): Future[Admin] = {
     log.debug(s"Creating ${request} with login ${login} ...")
 
     val salt = SaltGeneratorUUID.generateSalt
@@ -27,7 +28,7 @@ object AdminService extends Logger {
 
     adminDAO.create(request, login, hashedPassword, salt).map { admin =>
       val mail = use[MailerPlugin].email
-      mail.setSubject("Creation of your admin account")
+      mail.setSubject(Messages("emails.admins.create.subject"))
       mail.setRecipient(request.email)
       mail.setFrom(configuration.getString("email.from").getOrElse(creator.email))
       mail.sendHtml(views.html.emails.admins.create(admin, login , password, creator).body)

@@ -27,6 +27,12 @@ constraint.maxLength=Taille maximum : {0}
 constraint.required=Requis
 format.boolean=Format booléen
 
+emails.admins.create.subject=Création de votre compte administrateur
+emails.admins.create.header=Bonjour {0}
+emails.admins.create.created=Votre compte administrateur a été créé par {0}
+emails.admins.create.credentials=Vous pouvez vous connecter avec les identifiants suivants :
+emails.admins.create.footer=Bienvenue
+
 error.email=Email valide requis
 error.required=Ce champ est requis
 error.password=Mauvais mot de passe
