@@ -5,6 +5,7 @@ import scala.concurrent.Future
 import org.joda.time._
 
 import play.api._
+import play.api.Play.current
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -22,6 +23,17 @@ import utils.Mappings._
 object Visitors extends UserController {
   def home() = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.home())
+  }
+
+  val localeForm = Form(single(
+    "locale" -> nonEmptyText
+  ))
+  def locale(maybeRedirectURL: Option[String]) = WithMaybeUser { implicit request =>
+    val redirectURL = maybeRedirectURL orElse request.headers.get("Referer") getOrElse routes.Visitors.home.absoluteURL()
+    localeForm.bindFromRequest.fold(
+      formWithErrors => Redirect(redirectURL).flashing("error" -> Messages("locale.notChanged")),
+      locale => Redirect(redirectURL).withCookies(Cookie(Play.langCookieName, locale))
+    )
   }
 
   private val signupForm = Form(tuple(

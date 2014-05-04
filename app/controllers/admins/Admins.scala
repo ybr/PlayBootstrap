@@ -4,6 +4,8 @@ import scala.concurrent.Future
 
 import org.joda.time._
 
+import play.api.Play
+import play.api.Play.current
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -22,6 +24,17 @@ import utils.Mappings._
 object Admins extends AdminController with Logger {
   def home() = WithAdmin { implicit request =>
     Ok(views.html.admins.home())
+  }
+
+  val localeForm = Form(single(
+    "locale" -> nonEmptyText
+  ))
+  def locale(maybeRedirectURL: Option[String]) = Action { implicit request =>
+    val redirectURL = maybeRedirectURL orElse request.headers.get("Referer") getOrElse controllers.admins.routes.Admins.home.absoluteURL()
+    localeForm.bindFromRequest.fold(
+      formWithErrors => Redirect(redirectURL).flashing("error" -> Messages("locale.notChanged")),
+      locale => Redirect(redirectURL).withCookies(Cookie(Play.langCookieName, locale))
+    )
   }
 
   def all = WithAdmin.async { implicit request =>

@@ -110,7 +110,7 @@ object AdminPostgreDAO extends AdminDAO with PostgreDAO {
 
   def all(): Future[Seq[Admin]] = Future {
     DB.withTransaction { implicit c =>
-      SQL("SELECT * FROM T_ADMIN").as(simple *).map(Admin.apply _ tupled)
+      SQL("SELECT * FROM T_ADMIN ORDER BY creation").as(simple *).map(Admin.apply _ tupled)
     }
   }
 

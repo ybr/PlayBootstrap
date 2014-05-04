@@ -1,23 +1,24 @@
-@(form: Form[Boolean], admin: Admin)(implicit me: Admin, flash: Flash)
+@(form: Form[Boolean], admin: Admin)(implicit me: Admin, flash: Flash, lang: Lang)
 
-@main(s"Admin ${admin.email}") {
+@main(Messages("views.admins.adminDetails", admin.email)) {
+  <h1>@Messages("views.admins.adminDetails", admin.email)</h1>
   <dl>
-    <dt>ID</dt>
+    <dt>@Messages("id")</dt>
     <dd>@{admin.id | id}</dd>
-    <dt>First name</dt>
+    <dt>@Messages("firstname")</dt>
     <dd>@{admin.firstName}</dd>
-    <dt>Last name</dt>
+    <dt>@Messages("lastname")</dt>
     <dd>@{admin.lastName}</dd>
-    <dt>Email</dt>
+    <dt>@Messages("email")</dt>
     <dd>@{admin.email}</dd>
-    <dt>Creation date</dt>
+    <dt>@Messages("creationDate")</dt>
     <dd>@{admin.creation | date.long}</dd>
   </dl>
-  <form action="@controllers.admins.routes.Admins.update(admin.id)" method="POST">
+  @helper.form(controllers.admins.routes.Admins.update(admin.id)) {
     <fieldset>
-      <legend>Status</legend>
+      <legend>@Messages("status")</legend>
       @helper.checkbox(form("active"))
     </fieldset>
-    <button>Update</button>
-  </form>
+    <button>@Messages("update")</button>
+  }
 }

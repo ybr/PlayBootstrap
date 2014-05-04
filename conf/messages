@@ -1,9 +1,36 @@
+active=Active
+admins=Admins
+back=Back
+create=Create
+creationDate=Creation date
+credentials=Credentials
 email=Email
-password=Password
+firstname=Firstname
+home=Home
+id=ID
+lastname=Lastname
+locale=Locale
+login=Login
 newpassword=New password
+oops=Oops
+password=Password
+profile=Profile
+signin=Sign in
+signout=Sign out
+signup=Sign up
+status=Statut
+update=Update
+users=Users
+
+error.password=Wrong password
+error.unexpected=An unexpected error has occured
+
+locale.notChanged=The locale can not be updated
+locale.en=English
+locale.fr=Français
 
 flash.visitors.alreadyExists=This account already exists
-flash.visitors.credentialsUnknown=This account is unknown, please check both your email and password
+flash.visitors.credentialsUnknown=This account is unknown, please check both your login and password
 flash.visitors.subscribe=Your account has been successfully created
 
 flash.users.password.update=Your password has been successfully updated
@@ -13,6 +40,26 @@ flash.admin.admins.create=The admin {0} {1} has been successfully created
 flash.admin.admins.update=The admin {0} {1} has been successfully updated
 flash.admin.users.update=The user {0} {1} has been successfully updated
 flash.admins.alreadyExists=This account already exists
-flash.admins.credentialsUnknown=This account is unknown, please check both your email and password
+flash.admins.credentialsUnknown=This account is unknown, please check both your login and password
 
-error.password=Wrong password
+views.admins.adminCreate=Creation of an admin
+views.admins.adminDetails=Details of admin {0}
+views.admins.adminsTable.createAdmin=Create a new admin
+views.admins.adminsTable.list=List of admins
+views.admins.home=Admin home
+views.admins.locale.chooseLocale=Choose a locale
+views.admins.mainMaybeAdmin=ADMIN - {0}
+views.admins.nofound=This page can not be found
+views.admins.userDetails=Details of the user {0}
+views.admins.usersTable.list=List of users
+views.admins.usersTable.noUser=No user found
+
+views.users.home.modifyPassword=Modify my password
+views.users.home.modifyProfile=Modify my profile
+views.users.home.yourArea=Your area
+views.users.home.yourProfile=Your profile
+views.users.password.modifyPassword=Modify my password
+views.users.profile.myProfile=My profile
+
+views.visitors.home=This is the first page
+views.visitors.locale.chooseLocale=Choose a locale

@@ -142,7 +142,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
 
   def all(): Future[Seq[User]] = Future {
     DB.withTransaction { implicit c =>
-      SQL("SELECT * FROM T_USER").as(simple *).map(User.apply _ tupled)
+      SQL("SELECT * FROM T_USER ORDER BY creation").as(simple *).map(User.apply _ tupled)
     }
   }
 

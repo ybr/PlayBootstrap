@@ -1,3 +1,3 @@
-@(title: String)(content: Html)(implicit me: User, flash: Flash)
+@(title: String)(content: Html)(implicit me: User, flash: Flash, lang: Lang)
 
-@visitors.main(title)(content)(Some(me), flash)
+@visitors.main(title)(content)(Some(me), flash, lang)

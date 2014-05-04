@@ -1,4 +1,5 @@
 GET     /                   controllers.Visitors.home
+GET     /locale             controllers.Visitors.locale(redirect_uri: Option[String] ?= None)
 
 GET     /signup             controllers.Visitors.signup
 POST    /signup             controllers.Visitors.subscribe
@@ -14,6 +15,7 @@ GET     /me/password        controllers.Users.password
 POST    /me/password        controllers.Users.passwordUpdate
 
 GET     /admin              controllers.admins.Admins.home
+GET     /admin/locale       controllers.admins.Admins.locale(redirect_uri: Option[String] ?= None)
 
 GET     /admin/signin       controllers.admins.Authentication.signin
 POST    /admin/signin       controllers.admins.Authentication.authenticate

@@ -1,22 +1,23 @@
 @(users: Seq[User])(implicit me: Admin, flash: Flash, lang: Lang)
 
-@main("List of users") {
+@main(Messages("views.admins.usersTable.list")) {
+  <h1>@Messages("views.admins.usersTable.list")</h1>
   <table>
-    <caption>List of admins</caption>
+    <caption>@Messages("views.admins.usersTable.list")</caption>
     <thead>
       <tr>
-        <th>ID</th>
-        <th>First name</th>
-        <th>Last name</th>
-        <th>email</th>
-        <th>Active</th>
-        <th>Creation date</th>
+        <th>@Messages("id")</th>
+        <th>@Messages("firstname")</th>
+        <th>@Messages("lastname")</th>
+        <th>@Messages("email")</th>
+        <th>@Messages("active")</th>
+        <th>@Messages("creationDate")</th>
       </tr>
     </thead>
     <tbody>
       @if(users.length == 0) {
       <tr>
-        <td colspan="5">No user found</td>
+        <td colspan="5">@Messages("views.admins.usersTable.noUser")</td>
       </tr>
       } else {
         @users.map { user =>
