@@ -34,4 +34,9 @@ POST    /admin/admins/:id     controllers.admins.Admins.update(id: Id)
 
 POST    /admin/default      controllers.admins.Admins.default
 
+GET     /api/users                controllers.api.Users.all
+POST    /api/users                controllers.api.Users.create
+PUT     /api/users/:id            controllers.api.Users.update(id: Id)
+PUT     /api/users/:id/password   controllers.api.Users.updatePassword(id: Id)
+
 GET     /assets/*file       controllers.Assets.at(path="/public", file)

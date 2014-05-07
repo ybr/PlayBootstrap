@@ -45,6 +45,7 @@ object UserService extends Logger {
     } yield maybeUser
   }
 
+  def getLogin = userDAO.getLogin _
   def byLogin = userDAO.byLogin _
   def byId = userDAO.byId _
 

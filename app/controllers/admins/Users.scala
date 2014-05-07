@@ -37,7 +37,7 @@ object Users extends AdminController {
     userService.byId(id) flatMap {
       case Some(user) => activeForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(views.html.admins.userDetails(activeForm.fill(user.active), user))),
-        active => userService.update(user, UserUpdate(user).copy(active = active)) map {
+        active => userService.update(user, UserUpdate.from(user).copy(active = active)) map {
           case Some(updatedUser) => Redirect(controllers.admins.routes.Users.all).flashing("success" -> Messages("flash.admin.users.update", updatedUser.firstName, updatedUser.lastName))
           case None => NotFound(views.html.admins.notfound("The user can not be found"))
         }

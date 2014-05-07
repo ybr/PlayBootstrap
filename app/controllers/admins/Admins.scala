@@ -59,7 +59,7 @@ object Admins extends AdminController with Logger {
     adminService.byId(id) flatMap {
       case Some(admin) => activeForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(views.html.admins.adminDetails(formWithErrors, admin))),
-        active => adminService.update(admin, AdminUpdate(admin).copy(active = active)) map {
+        active => adminService.update(admin, AdminUpdate.from(admin).copy(active = active)) map {
           case Some(updatedAdmin) => Redirect(controllers.admins.routes.Admins.all).flashing("success" -> Messages("flash.admin.admins.update", updatedAdmin.firstName, updatedAdmin.lastName))
           case None => NotFound(views.html.admins.notfound("The admin can not be found"))
         }

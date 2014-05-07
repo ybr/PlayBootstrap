@@ -7,5 +7,5 @@ trait RequestCreate[T] {
 }
 
 trait RequestUpdate[T, R] {
-  def apply(t: T): R
+  def from(t: T): R
 }
