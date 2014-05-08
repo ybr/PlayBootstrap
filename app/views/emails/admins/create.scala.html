@@ -1,4 +1,4 @@
-@(createdAdmin: Admin, login: String, password: Password, creator: Admin)(implicit lang: Lang)
+@(createdAdmin: Admin, login: String, password: Password, maybeCreator: Option[Admin])(implicit lang: Lang)
 
 <html>
 <head>
@@ -6,7 +6,9 @@
 </head>
 <body>
   <header>@Messages("emails.admins.create.header", createdAdmin | fullname)</header>
-  <p>@Messages("emails.admins.create.created", creator | fullname)</p>
+  @maybeCreator.map { creator =>
+    <p>@Messages("emails.admins.create.created", creator | fullname)</p>
+  }
   <p>
     @Messages("emails.admins.create.credentials")
     <dl>

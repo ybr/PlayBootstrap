@@ -26,10 +26,10 @@ object Users extends Controller with JsonWriteable with Logger {
   // curl -v -H "Content-Type: application/json" -H "Authorization: Basic YXBpOmNoYW5nZW1l" -X GET http://localhost:9000/api/users
   def all = API.async(UserService.all.map(Ok(_)))
 
-  // curl -v -H "Content-Type: application/json" -H "Authorization: Basic YXBpOmNoYW5nZW1l" -X POST http://localhost:9000/api/users -d '{"firstName":"Yohann","lastName":"Brédoux1","email":"yohann1.bredoux@gmail.com","active":true,"creation":1398435384074}'
+  // curl -v -H "Content-Type: application/json" -H "Authorization: Basic YXBpOmNoYW5nZW1l" -X POST http://localhost:9000/api/users -d '{"firstName":"Yohann","lastName":"Brédoux1","email":"yo.bre@domain.com","active":true,"creation":1398435384074}'
   def create = API.async(parse.json) { implicit request =>
     AcceptJson.async[UserCreate] { uc =>
-      UserService.create(UserCreate(uc.firstName, uc.lastName, uc.email, true, DateTime.now), uc.email, RandomPassword.generate) map { user =>
+      UserService.create(uc, uc.email, RandomPassword.generate) map { user =>
         Created(user)
       }
     }
@@ -41,11 +41,10 @@ object Users extends Controller with JsonWriteable with Logger {
       for {
         maybeUser <- UserService.byId(id)
         maybeUpdated <- FutureUtils.sequence(maybeUser.map(UserService.update(_, uu))).map(_.flatten)
-        result = maybeUpdated match {
-          case Some(updatedUser) => Ok(updatedUser)
-          case None => NotFound
-        }
-      } yield result
+      } yield maybeUpdated match {
+        case Some(updatedUser) => Ok(updatedUser)
+        case None => NotFound
+      }
     }
   }
 

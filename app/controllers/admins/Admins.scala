@@ -84,7 +84,7 @@ object Admins extends AdminController with Logger {
       formWithErrors => Future.successful(BadRequest(views.html.admins.adminCreate(formWithErrors))),
       creationData => {
         val (firstName, lastName, email, password) = creationData
-        adminService.create(AdminCreate(firstName, lastName, email, true, DateTime.now), email, password, me) map { admin =>
+        adminService.create(AdminCreate(firstName, lastName, email, true, DateTime.now), email, password, Some(me)) map { admin =>
           Redirect(controllers.admins.routes.Admins.all).flashing("success" -> Messages("flash.admin.admins.create", admin.firstName, admin.lastName))
         } recover {
           case AccountAlreadyExistsException(login, _) =>
@@ -93,25 +93,5 @@ object Admins extends AdminController with Logger {
         }
       }
     )
-  }
-
-  def default() = Action.async {
-    log.info("Existing admin ?")
-    for {
-      count <- adminService.all.map(_.length)
-      result <- {
-        log.info(s"Found ${count} admin(s)")
-        count match {
-          case 0 =>
-            adminService.create(
-              AdminCreate("admin", "admin", "admin@domain.com", true, DateTime.now), "admin", Password("changeme"),
-              Admin(new Id { val value = "inexistant" }, "inexistant", "inexistant", "inexistant@domain.com", false, DateTime.now)
-            ) map { _ =>
-              Created("Default admin created")
-            }
-          case _ => Future.successful(Ok(s"Found ${count} admin(s)"))
-        }
-      }
-    } yield result
   }
 }

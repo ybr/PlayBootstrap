@@ -31,12 +31,13 @@ POST    /admin/admins/create  controllers.admins.Admins.create
 GET     /admin/admins/:id     controllers.admins.Admins.details(id: Id)
 POST    /admin/admins/:id     controllers.admins.Admins.update(id: Id)
 
-
-POST    /admin/default      controllers.admins.Admins.default
-
 GET     /api/users                controllers.api.Users.all
 POST    /api/users                controllers.api.Users.create
 PUT     /api/users/:id            controllers.api.Users.update(id: Id)
 PUT     /api/users/:id/password   controllers.api.Users.updatePassword(id: Id)
+
+GET     /api/admins               controllers.api.Admins.all
+POST    /api/admins               controllers.api.Admins.create
+PUT     /api/admins/:id           controllers.api.Admins.update(id: Id)
 
 GET     /assets/*file       controllers.Assets.at(path="/public", file)
