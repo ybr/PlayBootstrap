@@ -10,7 +10,8 @@ import org.joda.time._
 
 import com.typesafe.plugin._
 
-import ybr.playground.log._
+import playground.log._
+import playground.models._
 
 import models._
 import models.requests._

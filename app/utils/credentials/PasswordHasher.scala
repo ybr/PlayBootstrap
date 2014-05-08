@@ -1,9 +1,10 @@
 package utils.credentials
 
 import java.security.MessageDigest
+
 import org.apache.commons.codec.binary.Base64
 
-import models._
+import playground.models._
 
 trait PasswordHasher {
   def hashPassword(password: Password, salt: String): String

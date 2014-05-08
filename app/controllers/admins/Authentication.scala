@@ -10,8 +10,9 @@ import play.api.i18n._
 
 import play.api.libs.concurrent.Execution.Implicits._
 
+import playground.form.Mappings._
+
 import services._
-import utils.Mappings._
 
 object Authentication extends AdminController {
   private val signinForm = Form(tuple(

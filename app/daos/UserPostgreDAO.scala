@@ -9,11 +9,12 @@ import anorm.SqlParser._
 import play.api.Play.current
 import play.api.db.DB
 
+import playground.db.sql.SqlParsers._
+import playground.models._
+
 import models._
 import models.requests._
 import models.exceptions._
-import utils.SqlParsers._
-import utils.SqlParsers.pg._
 
 object UserPostgreDAO extends UserDAO with PostgreDAO {
   val simple = id("id") ~

@@ -4,7 +4,7 @@ import scala.util.Random
 
 import org.apache.commons.codec.binary.Base64
 
-import models.Password
+import playground.models._
 
 trait PasswordGenerator {
   def generate(): Password

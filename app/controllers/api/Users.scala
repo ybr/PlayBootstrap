@@ -7,20 +7,17 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.concurrent.Execution.Implicits._
 
-import org.joda.time._
+import playground.json._
+import playground.json.Implicits._
+import playground.log._
+import playground.form.Mappings._
+import playground.models._
 
-import ybr.playground.json.Implicits._
-import ybr.playground.log._
-
-import controllers.admins._
-import controllers.Formats._
+import controllers.JsonImplicits._
 import services._
-import models._
 import models.requests._
-import models.exceptions._
 import utils._
 import utils.credentials._
-import utils.Mappings._
 
 object Users extends Controller with JsonWriteable with Logger {
   // curl -v -H "Content-Type: application/json" -H "Authorization: Basic YXBpOmNoYW5nZW1l" -X GET http://localhost:9000/api/users

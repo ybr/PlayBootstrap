@@ -3,11 +3,13 @@ package controllers.api
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits._
 
+import playground.models._
+import playground.json._
+
 import utils._
-import models._
 import models.requests._
 import services._
-import controllers.Formats._
+import controllers.JsonImplicits._
 
 object Admins extends Controller with JsonWriteable {
   // curl -v -H "Content-Type: application/json" -H "Authorization: Basic YXBpOmNoYW5nZW1l" -X POST http://localhost:9000/api/admins -d '{"firstName":"Yohann","lastName":"Brédoux","email":"yo.bre@domain.com","active":true,"creation":1398435341051}'

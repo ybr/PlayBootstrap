@@ -3,7 +3,7 @@ import Keys._
 import play.Project._
 
 object ApplicationBuild extends Build {
-  lazy val playground = RootProject(uri("git://github.com/ybr/playground.git#0.0.5"))
+  lazy val playground = RootProject(uri("git://github.com/ybr/playground.git#0.0.6"))
 
   lazy val app = play.Project("PlayBoostrap", BuildSettings.appVersion, path = file("."), settings = BuildSettings.settings).settings (
     libraryDependencies ++= Seq(
@@ -14,12 +14,11 @@ object ApplicationBuild extends Build {
       "com.typesafe" %% "play-plugins-mailer" % "2.2.0"
     ),
     scalacOptions ++= Seq("-feature"),
-    routesImport ++= Seq("_root_.utils.binders._", "models._"),
+    routesImport ++= Seq("playground.models.binders._", "models._", "playground.models._"),
     templatesImport ++= Seq(
-      "utils.Formattable._",
-      "utils.Formattable.pg._",
-      "utils.Formatters._",
-      "utils.Formatters.pg._")
+      "playground.models._",
+      "playground.views.Formattable._",
+      "playground.views.Formatters._")
   ).dependsOn(playground)
 }
 

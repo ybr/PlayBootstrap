@@ -2,6 +2,8 @@ package models.requests
 
 import org.joda.time._
 
+import playground.models._
+
 import models._
 
 case class AdminCreate(

@@ -2,6 +2,8 @@ package daos
 
 import scala.concurrent.Future
 
+import playground.models._
+
 import models._
 import models.requests._
 

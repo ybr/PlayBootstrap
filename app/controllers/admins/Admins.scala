@@ -13,13 +13,14 @@ import play.api.data.validation.Constraints._
 import play.api.i18n._
 import play.api.libs.concurrent.Execution.Implicits._
 
-import ybr.playground.log._
+import playground.log._
+import playground.form.Mappings._
+import playground.models._
 
 import models._
 import models.requests._
 import models.exceptions._
 import services._
-import utils.Mappings._
 
 object Admins extends AdminController with Logger {
   def home() = WithAdmin { implicit request =>

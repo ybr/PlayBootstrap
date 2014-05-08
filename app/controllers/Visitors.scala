@@ -14,11 +14,12 @@ import play.api.i18n._
 
 import play.api.libs.concurrent.Execution.Implicits._
 
+import playground.form.Mappings._
+
 import models._
 import models.exceptions._
 import models.requests._
 import utils._
-import utils.Mappings._
 
 object Visitors extends UserController {
   def home() = WithMaybeUser { implicit request =>

@@ -8,6 +8,8 @@ import play.api.data.Forms._
 import play.api.i18n._
 import play.api.libs.concurrent.Execution.Implicits._
 
+import playground.models._
+
 import models._
 import models.requests._
 import services._
