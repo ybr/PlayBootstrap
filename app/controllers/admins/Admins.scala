@@ -22,7 +22,7 @@ import models.requests._
 import models.exceptions._
 import services._
 
-object Admins extends AdminController with Logger {
+object Admins extends Controller with AdminController with Logger {
   def home() = WithAdmin { implicit request =>
     Ok(views.html.admins.home())
   }

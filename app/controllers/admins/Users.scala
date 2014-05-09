@@ -14,7 +14,7 @@ import models._
 import models.requests._
 import services._
 
-object Users extends AdminController {
+object Users extends Controller with AdminController {
   def userService = UserService
 
   def all = WithAdmin.async { implicit request =>

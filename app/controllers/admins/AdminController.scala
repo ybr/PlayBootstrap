@@ -11,7 +11,7 @@ import utils._
 
 class AdminRequest[A](val admin: Admin, request: Request[A]) extends WrappedRequest[A](request)
 
-trait AdminController extends Controller {
+trait AdminController { self: Controller =>
   def adminService = AdminService
 
   implicit def me[A](implicit request: AdminRequest[A]): Admin = request.admin
