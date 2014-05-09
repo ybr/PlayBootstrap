@@ -22,7 +22,10 @@ object Authentication extends Controller with UserController {
   ))
 
   def signin() = WithMaybeUser { implicit request =>
-    Ok(views.html.visitors.signin(signinForm))
+    request.session.get("login") match {
+      case Some(_) => Redirect(routes.Users.home)
+      case None => Ok(views.html.visitors.signin(signinForm))
+    }
   }
 
   def signout() = Action {
@@ -36,7 +39,7 @@ object Authentication extends Controller with UserController {
         val (email, password) = signinData
         userService.authenticate(email, password) map {
           case Some(user) => {
-            var redirectUri = maybeRedirectURL orElse request.headers.get("Referer") getOrElse routes.Users.home.absoluteURL()
+            val redirectUri = maybeRedirectURL orElse request.headers.get("Referer") getOrElse routes.Users.home.absoluteURL()
             Redirect(redirectUri).withSession("login" -> email)
           }
           case None => {
