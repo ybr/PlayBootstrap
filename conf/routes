@@ -6,7 +6,7 @@ POST    /signup             controllers.Visitors.subscribe
 
 GET     /signin             controllers.Authentication.signin
 GET     /signout            controllers.Authentication.signout
-POST    /authenticate       controllers.Authentication.authenticate
+POST    /authenticate       controllers.Authentication.authenticate(redirect_uri: Option[String] ?= None)
 
 GET     /me                 controllers.Users.home
 GET     /me/profile         controllers.Users.profile

@@ -29,13 +29,16 @@ object Authentication extends Controller with UserController {
     Redirect(routes.Visitors.home).withNewSession
   }
 
-  def authenticate() = WithMaybeUser.async { implicit request =>
+  def authenticate(maybeRedirectURL: Option[String]) = WithMaybeUser.async { implicit request =>
     signinForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.visitors.signin(formWithErrors))),
       signinData => {
         val (email, password) = signinData
         userService.authenticate(email, password) map {
-          case Some(user) => Redirect(routes.Users.home).withSession("login" -> email)
+          case Some(user) => {
+            var redirectUri = maybeRedirectURL orElse request.headers.get("Referer") getOrElse routes.Users.home.absoluteURL()
+            Redirect(redirectUri).withSession("login" -> email)
+          }
           case None => {
             implicit val flash = Flash(Map("error" -> Messages("flash.visitors.credentialsUnknown")))
             Unauthorized(views.html.visitors.signin(signinForm.fill(signinData)))
