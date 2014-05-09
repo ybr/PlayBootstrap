@@ -23,7 +23,7 @@ trait AdminController { self: Controller =>
           case Some(admin) => block(new AdminRequest(admin, request))
           case None => Future.successful(Forbidden)
         }
-        case None => Future.successful(Redirect(controllers.admins.routes.Authentication.signin))
+        case None => Future.successful(Unauthorized(views.html.admins.signin(Authentication.signinForm)(flash(request), lang(request))))
       }
     }
   }

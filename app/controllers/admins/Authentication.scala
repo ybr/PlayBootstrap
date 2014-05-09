@@ -15,26 +15,32 @@ import playground.form.Mappings._
 import services._
 
 object Authentication extends Controller {
-  private val signinForm = Form(tuple(
+  val signinForm = Form(tuple(
     "login" -> nonEmptyText.verifying(maxLength(255)),
     "password" -> nonEmptyText(maxLength = 255).password
   ))
 
   def signin() = Action { implicit request =>
-    Ok(views.html.admins.signin(signinForm))
+    request.session.get("admin") match {
+      case Some(_) => Redirect(routes.Admins.home)
+      case None => Ok(views.html.admins.signin(signinForm))
+    }
   }
 
   def signout() = Action {
     Redirect(controllers.admins.routes.Admins.home).withNewSession
   }
 
-  def authenticate() = Action.async { implicit request =>
+  def authenticate(maybeRedirectURL: Option[String]) = Action.async { implicit request =>
     signinForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.admins.signin(formWithErrors))),
       signinData => {
         val (login, password) = signinData
         AdminService.authenticate(login, password) map {
-          case Some(admin) => Redirect(routes.Admins.home).withSession("admin" -> login)
+          case Some(admin) => {
+            val redirectUri = maybeRedirectURL orElse request.headers.get("Referer") getOrElse routes.Admins.home.absoluteURL()
+            Redirect(redirectUri).withSession("admin" -> login)
+          }
           case None => {
             implicit val flash = Flash(Map("error" -> Messages("flash.admins.credentialsUnknown")))
             Unauthorized(views.html.admins.signin(signinForm.fill(signinData)))

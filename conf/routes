@@ -18,7 +18,7 @@ GET     /admin              controllers.admins.Admins.home
 GET     /admin/locale       controllers.admins.Admins.locale(redirect_uri: Option[String] ?= None)
 
 GET     /admin/signin       controllers.admins.Authentication.signin
-POST    /admin/signin       controllers.admins.Authentication.authenticate
+POST    /admin/signin       controllers.admins.Authentication.authenticate(redirect_uri: Option[String] ?= None)
 GET     /admin/signout      controllers.admins.Authentication.signout
 
 GET     /admin/users        controllers.admins.Users.all
