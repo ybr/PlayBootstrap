@@ -21,7 +21,7 @@ import models.exceptions._
 import models.requests._
 import utils._
 
-object Visitors extends UserController {
+object Visitors extends Controller with UserController {
   def home() = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.home())
   }

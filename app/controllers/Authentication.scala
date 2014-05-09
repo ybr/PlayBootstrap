@@ -15,8 +15,8 @@ import playground.form.Mappings._
 
 import models._
 
-object Authentication extends UserController {
-  private val signinForm = Form(tuple(
+object Authentication extends Controller with UserController {
+  val signinForm = Form(tuple(
     "email" -> email.verifying(maxLength(255)),
     "password" -> nonEmptyText(maxLength = 255).password
   ))

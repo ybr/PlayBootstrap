@@ -12,7 +12,7 @@ import utils._
 class UserRequest[A](val me: User, request: Request[A]) extends WrappedRequest[A](request)
 class MaybeUserRequest[A](val maybeMe: Option[User], request: Request[A]) extends WrappedRequest[A](request)
 
-trait UserController extends Controller {
+trait UserController { self: Controller =>
   def userService = UserService
 
   implicit def me[A](implicit request: UserRequest[A]): User = request.me

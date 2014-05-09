@@ -16,7 +16,7 @@ import models._
 import models.requests._
 import services._
 
-object Users extends UserController {
+object Users extends Controller with UserController {
   def home() = WithUser { implicit request =>
     Ok(views.html.users.home(request.session("login")))
   }
