@@ -8,11 +8,13 @@ import play.api.data.Forms._
 import play.api.i18n._
 import play.api.libs.concurrent.Execution.Implicits._
 
+import playground.models._
+
 import models._
 import models.requests._
 import services._
 
-object Users extends AdminController {
+object Users extends Controller with AdminController {
   def userService = UserService
 
   def all = WithAdmin.async { implicit request =>
@@ -37,7 +39,7 @@ object Users extends AdminController {
     userService.byId(id) flatMap {
       case Some(user) => activeForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(views.html.admins.userDetails(activeForm.fill(user.active), user))),
-        active => userService.update(user, UserUpdate(user).copy(active = active)) map {
+        active => userService.update(user, UserUpdate.from(user).copy(active = active)) map {
           case Some(updatedUser) => Redirect(controllers.admins.routes.Users.all).flashing("success" -> Messages("flash.admin.users.update", updatedUser.firstName, updatedUser.lastName))
           case None => NotFound(views.html.admins.notfound("The user can not be found"))
         }

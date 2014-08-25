@@ -2,6 +2,8 @@ package models.requests
 
 import org.joda.time._
 
+import playground.models._
+
 import models._
 
 case class UserCreate(
@@ -22,5 +24,5 @@ case class UserUpdate(
 )
 
 object UserUpdate extends RequestUpdate[User, UserUpdate] {
-  def apply(u: User) = UserUpdate(u.firstName, u.lastName, u.email, u.active)
+  def from(u: User) = UserUpdate(u.firstName, u.lastName, u.email, u.active)
 }

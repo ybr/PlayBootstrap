@@ -9,11 +9,12 @@ import anorm.SqlParser._
 import play.api.Play.current
 import play.api.db.DB
 
+import playground.db.sql.SqlParsers._
+import playground.models._
+
 import models._
 import models.requests._
 import models.exceptions._
-import utils.SqlParsers._
-import utils.SqlParsers.pg._
 
 object UserPostgreDAO extends UserDAO with PostgreDAO {
   val simple = id("id") ~
@@ -155,6 +156,20 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
       """).on(
         "id" -> param(id)
       ).as(simple.singleOpt.map(_.map(User.apply _ tupled)))
+    }
+  }
+
+  def getLogin(user: User): Future[Option[String]] = Future {
+    DB.withTransaction { implicit c =>
+      SQL("""
+        SELECT
+          c.login
+        FROM
+          T_USER u
+          INNER JOIN T_CREDENTIALS c ON c.id = u.credentials_id
+        WHERE
+          u.id= {id}
+      """).on("id" -> param(user.id)).as(scalar[String].singleOpt)
     }
   }
 }

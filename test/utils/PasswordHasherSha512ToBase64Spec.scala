@@ -2,7 +2,7 @@ package utils.credentials
 
 import org.specs2.mutable._
 
-import models._
+import playground.models._
 
 object PasswordHasherSha512ToBase64Spec extends Specification {
   "PasswordHasherSha512ToBase64" should {

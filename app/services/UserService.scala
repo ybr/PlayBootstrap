@@ -8,7 +8,10 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 import com.typesafe.plugin._
 
-import ybr.playground.log._
+import org.joda.time._
+
+import playground.log._
+import playground.models._
 
 import utils.credentials._
 import daos._
@@ -19,7 +22,8 @@ import utils._
 object UserService extends Logger {
   def userDAO: UserDAO = UserPostgreDAO
 
-  def create(request: UserCreate, login: String, password: Password)(implicit lang: Lang): Future[User] = {
+  def create(unsafeRequest: UserCreate, login: String, password: Password)(implicit lang: Lang): Future[User] = {
+    val request = unsafeRequest.copy(creation = DateTime.now)
     log.debug(s"Creating ${request} with login ${login} ...")
     val salt = SaltGeneratorUUID.generateSalt
     val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(password, salt)
@@ -45,6 +49,7 @@ object UserService extends Logger {
     } yield maybeUser
   }
 
+  def getLogin = userDAO.getLogin _
   def byLogin = userDAO.byLogin _
   def byId = userDAO.byId _
 

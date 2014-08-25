@@ -2,6 +2,8 @@ package models.requests
 
 import org.joda.time._
 
+import playground.models._
+
 import models._
 
 case class AdminCreate(
@@ -22,5 +24,5 @@ case class AdminUpdate(
 )
 
 object AdminUpdate extends RequestUpdate[Admin, AdminUpdate] {
-  def apply(a: Admin) = AdminUpdate(a.firstName, a.lastName, a.email, a.active)
+  def from(a: Admin) = AdminUpdate(a.firstName, a.lastName, a.email, a.active)
 }

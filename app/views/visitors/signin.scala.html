@@ -2,7 +2,8 @@
 
 @main(Messages("signin")) {
   <h1>@Messages("signin")</h1>
-  @helper.form(routes.Authentication.authenticate) {
+  <a href="@routes.Visitors.signup">@Messages("signup")</a>
+  @helper.form(routes.Authentication.authenticate()) {
     <fieldset>
       <legend>@Messages("signin")</legend>
       @helper.inputText(form("email"))
@@ -10,5 +11,4 @@
     </fieldset>
     <button>@Messages("signin")</button>
   }
-  <a href="@routes.Visitors.signup">@Messages("signup")</a>
 }

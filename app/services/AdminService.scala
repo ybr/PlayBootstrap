@@ -6,9 +6,12 @@ import play.api.Play._
 import play.api.i18n._
 import play.api.libs.concurrent.Execution.Implicits._
 
+import org.joda.time._
+
 import com.typesafe.plugin._
 
-import ybr.playground.log._
+import playground.log._
+import playground.models._
 
 import models._
 import models.requests._
@@ -19,7 +22,8 @@ import utils.credentials._
 object AdminService extends Logger {
   def adminDAO: AdminDAO = AdminPostgreDAO
 
-  def create(request: AdminCreate, login: String, password: Password, creator: Admin)(implicit lang: Lang): Future[Admin] = {
+  def create(unsafeRequest: AdminCreate, login: String, password: Password, creator: Option[Admin])(implicit lang: Lang): Future[Admin] = {
+    val request = unsafeRequest.copy(creation = DateTime.now)
     log.debug(s"Creating ${request} with login ${login} ...")
 
     val salt = SaltGeneratorUUID.generateSalt
@@ -30,7 +34,7 @@ object AdminService extends Logger {
       val mail = use[MailerPlugin].email
       mail.setSubject(Messages("emails.admins.create.subject"))
       mail.setRecipient(request.email)
-      mail.setFrom(configuration.getString("email.from").getOrElse(creator.email))
+      mail.setFrom(configuration.getString("email.from") getOrElse "unknown@unknown.com")
       mail.sendHtml(views.html.emails.admins.create(admin, login , password, creator).body)
 
       admin

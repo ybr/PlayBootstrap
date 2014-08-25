@@ -5,8 +5,8 @@ GET     /signup             controllers.Visitors.signup
 POST    /signup             controllers.Visitors.subscribe
 
 GET     /signin             controllers.Authentication.signin
+POST    /signin             controllers.Authentication.authenticate(redirect_uri: Option[String] ?= None)
 GET     /signout            controllers.Authentication.signout
-POST    /authenticate       controllers.Authentication.authenticate
 
 GET     /me                 controllers.Users.home
 GET     /me/profile         controllers.Users.profile
@@ -18,7 +18,7 @@ GET     /admin              controllers.admins.Admins.home
 GET     /admin/locale       controllers.admins.Admins.locale(redirect_uri: Option[String] ?= None)
 
 GET     /admin/signin       controllers.admins.Authentication.signin
-POST    /admin/signin       controllers.admins.Authentication.authenticate
+POST    /admin/signin       controllers.admins.Authentication.authenticate(redirect_uri: Option[String] ?= None)
 GET     /admin/signout      controllers.admins.Authentication.signout
 
 GET     /admin/users        controllers.admins.Users.all
@@ -31,7 +31,13 @@ POST    /admin/admins/create  controllers.admins.Admins.create
 GET     /admin/admins/:id     controllers.admins.Admins.details(id: Id)
 POST    /admin/admins/:id     controllers.admins.Admins.update(id: Id)
 
+GET     /api/users                controllers.api.Users.all
+POST    /api/users                controllers.api.Users.create
+PUT     /api/users/:id            controllers.api.Users.update(id: Id)
+PUT     /api/users/:id/password   controllers.api.Users.updatePassword(id: Id)
 
-POST    /admin/default      controllers.admins.Admins.default
+GET     /api/admins               controllers.api.Admins.all
+POST    /api/admins               controllers.api.Admins.create
+PUT     /api/admins/:id           controllers.api.Admins.update(id: Id)
 
 GET     /assets/*file       controllers.Assets.at(path="/public", file)

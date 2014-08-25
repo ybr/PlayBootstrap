@@ -2,7 +2,7 @@ package models
 
 import org.joda.time._
 
-import ybr.playground.models.Nameable
+import playground.models._
 
 case class User(
   id: Id,
