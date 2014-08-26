@@ -4,7 +4,7 @@ import java.util.Date
 
 import org.joda.time.DateTime
 
-import models._
+import playground.models._
 
 trait PostgreDAO extends DAO {
   val unique_violation = "23505"

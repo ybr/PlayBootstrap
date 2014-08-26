@@ -10,6 +10,8 @@ import reactivemongo.bson._
 import play.modules.reactivemongo.ReactiveMongoPlugin
 import play.modules.reactivemongo.json.collection.JSONCollection
 
+import playground.models._
+
 import models._
 import models.requests._
 import models.exceptions._

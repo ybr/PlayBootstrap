@@ -5,7 +5,8 @@ import scala.concurrent.Future
 import play.api.Play._
 import play.api.libs.json._
 
-import ybr.playground.log._
+import playground.log._
+import playground.models._
 
 import reactivemongo.core.commands.LastError
 import reactivemongo.bson._
@@ -44,17 +45,6 @@ object UserMongoDAO extends UserDAO with MongoDAO with Logger {
   ) flatMap { _ =>
     byId(user.id)
   }
-
-  def updatePassword(login: String, password: String, salt: String): Future[Option[Unit]] = collection.update(
-    Json.obj("login" -> login),
-    Json.obj("$set" -> Json.obj(
-      "password" -> password,
-      "salt" -> salt
-    ))
-  ).map(_.updated match {
-    case 0 => None
-    case _ => Some(())
-  })
 
   def salt(login: String): Future[Option[String]] = {
     log.debug(s"Salt for ${login}")

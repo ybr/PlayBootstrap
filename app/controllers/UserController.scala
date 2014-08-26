@@ -13,7 +13,7 @@ import App.Daos._
 class UserRequest[A](val me: User, request: Request[A]) extends WrappedRequest[A](request)
 class MaybeUserRequest[A](val maybeMe: Option[User], request: Request[A]) extends WrappedRequest[A](request)
 
-trait UserController extends Controller {
+trait UserController { self: Controller =>
   implicit def me[A](implicit request: UserRequest[A]): User = request.me
   implicit def maybeMe[A](implicit request: MaybeUserRequest[A]): Option[User] = request.maybeMe
 
@@ -24,7 +24,9 @@ trait UserController extends Controller {
           case Some(user) => block(new UserRequest(user, request))
           case None => Future.successful(Forbidden)
         }
-        case None => Future.successful(Redirect(routes.Authentication.signin))
+        case None => {
+          Future.successful(Unauthorized(views.html.visitors.signin(Authentication.signinForm)(None, flash(request), lang(request))))
+        }
       }
     }
   }

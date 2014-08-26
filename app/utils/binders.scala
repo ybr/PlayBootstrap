@@ -2,7 +2,7 @@ package utils
 
 import play.api.mvc.{ QueryStringBindable, PathBindable }
 
-import models._
+import playground.models._
 
 package object binders {
   implicit val bindersIdProvider = new IdProvider[String] {

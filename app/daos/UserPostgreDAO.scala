@@ -9,11 +9,12 @@ import anorm.SqlParser._
 import play.api.Play.current
 import play.api.db.DB
 
+import playground.db.sql.SqlParsers._
+import playground.models._
+
 import models._
 import models.requests._
 import models.exceptions._
-import utils.SqlParsers._
-import utils.SqlParsers.pg._
 
 object UserPostgreDAO extends UserDAO with PostgreDAO {
   val simple = id("id") ~
@@ -79,23 +80,6 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
     byId(user.id)
   }
 
-  def updatePassword(login: String, password: String, salt: String): Future[Option[Unit]] = Future {
-    DB.withTransaction { implicit c =>
-      val updates = SQL("""
-        UPDATE T_CREDENTIALS
-        SET
-          password = {password},
-          salt = {salt}
-        WHERE login = {login}
-      """).on(
-        "login" -> login,
-        "password" -> password,
-        "salt" -> salt
-      ).executeUpdate()
-      if(updates == 0) None else Some(())
-    }
-  }
-
   def salt(login: String): Future[Option[String]] = Future {
     DB.withTransaction { implicit c =>
       SQL("""
@@ -142,7 +126,7 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
 
   def all(): Future[Seq[User]] = Future {
     DB.withTransaction { implicit c =>
-      SQL("SELECT * FROM T_USER").as(simple *).map(User.apply _ tupled)
+      SQL("SELECT * FROM T_USER ORDER BY creation").as(simple *).map(User.apply _ tupled)
     }
   }
 

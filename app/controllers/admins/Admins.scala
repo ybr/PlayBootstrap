@@ -4,6 +4,8 @@ import scala.concurrent.Future
 
 import org.joda.time._
 
+import play.api.Play
+import play.api.Play.current
 import play.api.mvc._
 import play.api.data._
 import play.api.data.Forms._
@@ -11,18 +13,30 @@ import play.api.data.validation.Constraints._
 import play.api.i18n._
 import play.api.libs.concurrent.Execution.Implicits._
 
-import ybr.playground.log._
+import playground.log._
+import playground.form.Mappings._
+import playground.models._
 
 import models._
 import models.requests._
 import models.exceptions._
 import services._
-import utils.Mappings._
 import App.Daos._
 
-object Admins extends AdminController with Logger {
+object Admins extends Controller with AdminController with Logger {
   def home = WithAdmin { implicit request =>
     Ok(views.html.admins.home())
+  }
+
+  val localeForm = Form(single(
+    "locale" -> nonEmptyText
+  ))
+  def locale(maybeRedirectURL: Option[String]) = Action { implicit request =>
+    val redirectURL = maybeRedirectURL orElse request.headers.get("Referer") getOrElse controllers.admins.routes.Admins.home.absoluteURL()
+    localeForm.bindFromRequest.fold(
+      formWithErrors => Redirect(redirectURL).flashing("error" -> Messages("locale.notChanged")),
+      locale => Redirect(redirectURL).withCookies(Cookie(Play.langCookieName, locale))
+    )
   }
 
   def all = WithAdmin.async { implicit request =>
@@ -72,7 +86,7 @@ object Admins extends AdminController with Logger {
       formWithErrors => Future.successful(BadRequest(views.html.admins.adminCreate(formWithErrors))),
       creationData => {
         val (firstName, lastName, email, password) = creationData
-        AdminService.create(AdminCreate(firstName, lastName, email, true, DateTime.now), email, password, me) map { admin =>
+        AdminService.create(AdminCreate(firstName, lastName, email, true, DateTime.now), email, password, Some(me)) map { admin =>
           Redirect(controllers.admins.routes.Admins.all).flashing("success" -> Messages("flash.admin.admins.create", admin.firstName, admin.lastName))
         } recover {
           case AccountAlreadyExistsException(login, _) =>
@@ -81,25 +95,5 @@ object Admins extends AdminController with Logger {
         }
       }
     )
-  }
-
-  def default = Action.async {
-    log.info("Existing admin ?")
-    for {
-      count <- AdminService.all.map(_.length)
-      result <- {
-        log.info(s"Found ${count} admin(s)")
-        count match {
-          case 0 =>
-            AdminService.create(
-              AdminCreate("admin", "admin", "admin@domain.com", true, DateTime.now), "admin", Password("changeme"),
-              Admin(new Id { val value = "inexistant" }, "inexistant", "inexistant", "inexistant@domain.com", false, DateTime.now)
-            ) map { _ =>
-              Created("Default admin created")
-            }
-          case _ => Future.successful(Ok(s"Found ${count} admin(s)"))
-        }
-      }
-    } yield result
   }
 }

@@ -2,7 +2,7 @@ package models
 
 import org.joda.time._
 
-import ybr.playground.models.Nameable
+import playground.models._
 
 case class Admin(
   id: Id,

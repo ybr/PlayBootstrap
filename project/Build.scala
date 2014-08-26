@@ -3,7 +3,7 @@ import Keys._
 import play.Project._
 
 object ApplicationBuild extends Build {
-  lazy val playground = RootProject(uri("git://github.com/ybr/playground.git#0.0.4"))
+  lazy val playground = RootProject(uri("git://github.com/ybr/playground.git#0.0.12"))
 
   lazy val app = play.Project("PlayBoostrap", BuildSettings.appVersion, path = file("."), settings = BuildSettings.settings).settings (
     libraryDependencies ++= Seq(
@@ -13,16 +13,16 @@ object ApplicationBuild extends Build {
       "commons-codec" % "commons-codec" % "1.9",
       "com.typesafe" %% "play-plugins-mailer" % "2.2.0",
       "org.reactivemongo" %% "reactivemongo" % "0.10.0",
-      "org.reactivemongo" %% "play2-reactivemongo" % "0.10.2"
+      "org.reactivemongo" %% "play2-reactivemongo" % "0.10.2",
+      "ybr" %% "playground" % "1.0-SNAPSHOT"
     ),
-    scalacOptions += "-feature",
-    routesImport ++= Seq("_root_.utils.binders._", "models._"),
+    scalacOptions ++= Seq("-feature"),
+    routesImport ++= Seq("playground.models.binders._", "models._", "playground.models._"),
     templatesImport ++= Seq(
-      "utils.Formattable._",
-      "utils.Formattable.pg._",
-      "utils.Formatters._",
-      "utils.Formatters.pg._")
-  ).dependsOn(playground)
+      "playground.models._",
+      "playground.views.Formattable._",
+      "playground.views.Formatters._")
+  )
 }
 
 object BuildSettings {

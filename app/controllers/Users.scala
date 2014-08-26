@@ -10,13 +10,14 @@ import play.api.i18n._
 
 import play.api.libs.concurrent.Execution.Implicits._
 
+import playground.form.Mappings._
+
 import models._
 import models.requests._
 import services._
-import utils.Mappings._
 import App.Daos._
 
-object Users extends UserController {
+object Users extends Controller with UserController {
   def home = WithUser { implicit request =>
     Ok(views.html.users.home(request.session("login")))
   }
@@ -39,30 +40,6 @@ object Users extends UserController {
       updateData => {
         UserService.update(me, UserUpdate(updateData.firstName, updateData.lastName, updateData.email, me.active)).map { _ =>
           Redirect(routes.Users.home).flashing("success" -> Messages("flash.users.profile.update"))
-        }
-      }
-    )
-  }
-
-  val updatePasswordForm = Form(tuple(
-    "password" -> nonEmptyText(maxLength = 255).password,
-    "newpassword" -> nonEmptyText(maxLength = 255).password
-  ))
-
-  def password = WithUser { implicit request =>
-    Ok(views.html.users.password(updatePasswordForm))
-  }
-
-  def passwordUpdate = WithUser.async { implicit request =>
-    updatePasswordForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(views.html.users.password(formWithErrors))),
-      updatePassword => {
-        val (password, newPassword) = updatePassword
-        UserService.updatePassword(request.session("login"), password, newPassword) map {
-          case Some(_) => Redirect(routes.Users.home).flashing("success" -> Messages("flash.users.password.update"))
-          case None => BadRequest(views.html.users.password(
-            updatePasswordForm.fill(updatePassword).withError("password", "error.password"))
-          )
         }
       }
     )

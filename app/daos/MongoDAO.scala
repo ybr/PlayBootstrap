@@ -5,7 +5,7 @@ import reactivemongo.bson._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-import models._
+import playground.models._
 
 trait MongoDAO extends DAO {
   val unique_violation = 11000

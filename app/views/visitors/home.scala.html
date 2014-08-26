@@ -1,5 +1,5 @@
-@()(implicit maybeMe: Option[User], flash: Flash)
+@()(implicit maybeMe: Option[User], flash: Flash, lang: Lang)
 
 @main("Home") {
-  This is the first page
+  @Messages("views.visitors.home")
 }

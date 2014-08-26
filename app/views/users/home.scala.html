@@ -1,27 +1,26 @@
-@(login: String)(implicit me: User, flash: Flash)
+@(login: String)(implicit me: User, flash: Flash, lang: Lang)
 
-@main("My home") {
-  <h1>Your area</h1>
+@main(Messages("views.users.home.yourArea")) {
+  <h1>@Messages("views.users.home.yourArea")</h1>
 
   <section>
-    <h2>Your profile</h2>
+    <h2>@Messages("views.users.home.yourProfile")</h2>
     <dl>
-      <dt>First name</dt>
+      <dt>@Messages("firstname")</dt>
       <dd>@{me.firstName}</dd>
-      <dt>Last name</dt>
+      <dt>@Messages("lastname")</dt>
       <dd>@{me.lastName}</dd>
-      <dt>Email</dt>
+      <dt>@Messages("email")</dt>
       <dd>@{me.email}</dd>
     </dl>
-    <a href="@routes.Users.profile">Modify my profile</a>
+    <a href="@routes.Users.profile">@Messages("views.users.home.modifyProfile")</a>
   </section>
 
   <section>
-    <h2>Credentials</h2>
+    <h2>@Messages("credentials")</h2>
     <dl>
-      <dt>Login</dt>
+      <dt>@Messages("login")</dt>
       <dd>@{login}</dd>
     </dl>
-    <a href="@routes.Users.password">Modify my password</a>
   </section>
 }

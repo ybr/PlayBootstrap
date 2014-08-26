@@ -1,5 +1,6 @@
-@()(implicit me: Admin, flash: Flash)
+@()(implicit me: Admin, flash: Flash, lang: Lang)
 
-@main("Home") {
-  Admin home
+@main(Messages("home")) {
+  <h1>@Messages("home")</h1>
+  @Messages("views.admins.home")
 }

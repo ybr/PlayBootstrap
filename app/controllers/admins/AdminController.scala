@@ -12,7 +12,7 @@ import App.Daos._
 
 class AdminRequest[A](val admin: Admin, request: Request[A]) extends WrappedRequest[A](request)
 
-trait AdminController extends Controller {
+trait AdminController { self: Controller =>
   implicit def me[A](implicit request: AdminRequest[A]): Admin = request.admin
 
   object WithAdmin extends ActionBuilder[AdminRequest] {
@@ -22,7 +22,7 @@ trait AdminController extends Controller {
           case Some(admin) => block(new AdminRequest(admin, request))
           case None => Future.successful(Forbidden)
         }
-        case None => Future.successful(Redirect(controllers.admins.routes.Authentication.signin))
+        case None => Future.successful(Unauthorized(views.html.admins.signin(Authentication.signinForm)(flash(request), lang(request))))
       }
     }
   }
