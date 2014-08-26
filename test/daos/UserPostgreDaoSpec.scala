@@ -9,7 +9,6 @@ import org.specs2.mutable._
 import models.requests._
 import models.exceptions._
 
-// TODO complete tests
 object UserPostgreDaoSpec extends Specification with DaoSpec {
   "UserPostgreDAO" should {
     "create an account" in new WithInMemoryDB {
@@ -84,13 +83,6 @@ object UserPostgreDaoSpec extends Specification with DaoSpec {
       readUser.lastName must be equalTo("lastName1")
       readUser.email must be equalTo("user1@domain.com")
       readUser.creation must be equalTo(user.creation)
-    }
-
-    "update the user password" in new WithInMemoryDB {
-      val user = await(UserPostgreDAO.create(Fixtures.userCreate0, "login", "pwd", "someSalt"))
-      await(UserPostgreDAO.updatePassword("login", "newPwd", "someOtherSalt"))
-      val authenticatedUser = await(UserPostgreDAO.authenticate("login", "newPwd"))
-      authenticatedUser must beSome
     }
   }
 }

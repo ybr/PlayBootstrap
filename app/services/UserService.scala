@@ -20,9 +20,7 @@ import models._
 import utils._
 
 object UserService extends Logger {
-  def userDAO: UserDAO = UserPostgreDAO
-
-  def create(unsafeRequest: UserCreate, login: String, password: Password)(implicit lang: Lang): Future[User] = {
+  def create(unsafeRequest: UserCreate, login: String, password: Password)(implicit userDAO: UserDAO, lang: Lang): Future[User] = {
     val request = unsafeRequest.copy(creation = DateTime.now)
     log.debug(s"Creating ${request} with login ${login} ...")
     val salt = SaltGeneratorUUID.generateSalt
@@ -39,7 +37,7 @@ object UserService extends Logger {
     }
   }
 
-  def authenticate(login: String, password: Password): Future[Option[User]] = {
+  def authenticate(login: String, password: Password)(implicit userDAO: UserDAO): Future[Option[User]] = {
     log.debug(s"Authenticating user with login ${login} ...")
     for {
       maybeSalt <- userDAO.salt(login)
@@ -49,31 +47,13 @@ object UserService extends Logger {
     } yield maybeUser
   }
 
-  def getLogin = userDAO.getLogin _
-  def byLogin = userDAO.byLogin _
-  def byId = userDAO.byId _
+  def byLogin(login: String)(implicit userDAO: UserDAO) = userDAO.byLogin(login)
+  def byId(id: Id)(implicit userDAO: UserDAO) = userDAO.byId(id)
 
-  def all = userDAO.all
+  def all(implicit userDAO: UserDAO) = userDAO.all
 
-  def update(user: User, request: UserUpdate): Future[Option[User]] = {
+  def update(user: User, request: UserUpdate)(implicit userDAO: UserDAO): Future[Option[User]] = {
     log.debug(s"Updating ${user} with ${request}...")
     userDAO.update(user, request)
-  }
-
-  // TODO use monad transformer future option
-  def updatePassword(login: String, oldPassword: Password, newPassword: Password): Future[Option[Unit]] = {
-    log.debug(s"Updating password for login ${login}")
-    for {
-      maybeSalt <- userDAO.salt(login)
-      maybeUser <- FutureUtils.sequence(maybeSalt.map { salt =>
-        userDAO.authenticate(login, PasswordHasherSha512ToBase64.hashPassword(oldPassword, salt))
-      }).map(_.flatten)
-      update <- FutureUtils.sequence(maybeUser map { user =>
-        log.debug(s"Updating password for ${user}...")
-        val salt = SaltGeneratorUUID.generateSalt
-        val hashedPassword = PasswordHasherSha512ToBase64.hashPassword(newPassword, salt)
-        userDAO.updatePassword(login, hashedPassword, salt)
-      }).map(_.flatten)
-    } yield update
   }
 }

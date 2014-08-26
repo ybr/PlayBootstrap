@@ -80,23 +80,6 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
     byId(user.id)
   }
 
-  def updatePassword(login: String, password: String, salt: String): Future[Option[Unit]] = Future {
-    DB.withTransaction { implicit c =>
-      val updates = SQL("""
-        UPDATE T_CREDENTIALS
-        SET
-          password = {password},
-          salt = {salt}
-        WHERE login = {login}
-      """).on(
-        "login" -> login,
-        "password" -> password,
-        "salt" -> salt
-      ).executeUpdate()
-      if(updates == 0) None else Some(())
-    }
-  }
-
   def salt(login: String): Future[Option[String]] = Future {
     DB.withTransaction { implicit c =>
       SQL("""
@@ -156,20 +139,6 @@ object UserPostgreDAO extends UserDAO with PostgreDAO {
       """).on(
         "id" -> param(id)
       ).as(simple.singleOpt.map(_.map(User.apply _ tupled)))
-    }
-  }
-
-  def getLogin(user: User): Future[Option[String]] = Future {
-    DB.withTransaction { implicit c =>
-      SQL("""
-        SELECT
-          c.login
-        FROM
-          T_USER u
-          INNER JOIN T_CREDENTIALS c ON c.id = u.credentials_id
-        WHERE
-          u.id= {id}
-      """).on("id" -> param(user.id)).as(scalar[String].singleOpt)
     }
   }
 }

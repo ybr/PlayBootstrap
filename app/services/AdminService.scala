@@ -20,9 +20,7 @@ import utils._
 import utils.credentials._
 
 object AdminService extends Logger {
-  def adminDAO: AdminDAO = AdminPostgreDAO
-
-  def create(unsafeRequest: AdminCreate, login: String, password: Password, creator: Option[Admin])(implicit lang: Lang): Future[Admin] = {
+  def create(unsafeRequest: AdminCreate, login: String, password: Password, creator: Option[Admin])(implicit adminDAO: AdminDAO, lang: Lang): Future[Admin] = {
     val request = unsafeRequest.copy(creation = DateTime.now)
     log.debug(s"Creating ${request} with login ${login} ...")
 
@@ -41,7 +39,7 @@ object AdminService extends Logger {
     }
   }
 
-  def authenticate(login: String, password: Password): Future[Option[Admin]] = {
+  def authenticate(login: String, password: Password)(implicit adminDAO: AdminDAO): Future[Option[Admin]] = {
     log.debug(s"Authenticating admin with login ${login} ...")
     for {
       maybeSalt <- adminDAO.salt(login)
@@ -52,12 +50,12 @@ object AdminService extends Logger {
     } yield maybeAdmin
   }
 
-  def byLogin = adminDAO.byLogin _
-  def byId = adminDAO.byId _
+  def byLogin(login: String)(implicit adminDAO: AdminDAO) = adminDAO.byLogin(login)
+  def byId(id: Id)(implicit adminDAO: AdminDAO) = adminDAO.byId(id)
 
-  def all(): Future[Seq[Admin]] = adminDAO.all
+  def all(implicit adminDAO: AdminDAO): Future[Seq[Admin]] = adminDAO.all
 
-  def update(admin: Admin, request: AdminUpdate): Future[Option[Admin]] = {
+  def update(admin: Admin, request: AdminUpdate)(implicit adminDAO: AdminDAO): Future[Option[Admin]] = {
     log.debug(s"Updating ${admin} with ${request}")
     adminDAO.update(admin, request)
   }

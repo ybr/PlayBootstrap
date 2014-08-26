@@ -14,6 +14,8 @@ import playground.json.Implicits._
 import playground.form.Mappings._
 
 import models._
+import services._
+import App.Daos._
 
 object Authentication extends Controller with UserController {
   val signinForm = Form(tuple(
@@ -37,7 +39,7 @@ object Authentication extends Controller with UserController {
       formWithErrors => Future.successful(BadRequest(views.html.visitors.signin(formWithErrors))),
       signinData => {
         val (email, password) = signinData
-        userService.authenticate(email, password) map {
+        UserService.authenticate(email, password) map {
           case Some(user) => {
             val redirectUri = maybeRedirectURL orElse request.headers.get("Referer") getOrElse routes.Users.home.absoluteURL()
             Redirect(redirectUri).withSession("login" -> email)

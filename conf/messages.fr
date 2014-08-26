@@ -71,11 +71,9 @@ views.admins.userDetails=Détails de l''utilisateur {0}
 views.admins.usersTable.list=Liste des utilisateurs
 views.admins.usersTable.noUser=Aucun utilisateur trouvé
 
-views.users.home.modifyPassword=Modifier mon mot de passe
 views.users.home.modifyProfile=Modifier mon profil
 views.users.home.yourArea=Votre espace
 views.users.home.yourProfile=Votre profil
-views.users.password.modifyPassword=Modifier mon mot de passe
 views.users.profile.myProfile=Mon profil
 
 views.visitors.home=Ceci est la première page

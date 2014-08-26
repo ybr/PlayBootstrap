@@ -19,10 +19,12 @@ import playground.form.Mappings._
 import models._
 import models.exceptions._
 import models.requests._
+import services._
 import utils._
+import App.Daos._
 
 object Visitors extends Controller with UserController {
-  def home() = WithMaybeUser { implicit request =>
+  def home = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.home())
   }
 
@@ -44,16 +46,16 @@ object Visitors extends Controller with UserController {
     "password" -> nonEmptyText(maxLength = 255).password
   ))
 
-  def signup() = WithMaybeUser { implicit request =>
+  def signup = WithMaybeUser { implicit request =>
     Ok(views.html.visitors.signup(signupForm))
   }
 
-  def subscribe() = WithMaybeUser.async { implicit request =>
+  def subscribe = WithMaybeUser.async { implicit request =>
     signupForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(views.html.visitors.signup(formWithErrors))),
       signupData => {
         val (firstName, lastName, email, password) = signupData
-        userService.create(UserCreate(firstName, lastName, email, true, DateTime.now), email, password) map { _ =>
+        UserService.create(UserCreate(firstName, lastName, email, true, DateTime.now), email, password) map { _ =>
           Redirect(routes.Authentication.signin).flashing("success" -> i18n.Messages("flash.visitors.subscribe"))
         } recover {
           case AccountAlreadyExistsException(login, _) =>

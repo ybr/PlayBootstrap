@@ -66,11 +66,9 @@ views.admins.userDetails=Details of the user {0}
 views.admins.usersTable.list=List of users
 views.admins.usersTable.noUser=No user found
 
-views.users.home.modifyPassword=Modify my password
 views.users.home.modifyProfile=Modify my profile
 views.users.home.yourArea=Your area
 views.users.home.yourProfile=Your profile
-views.users.password.modifyPassword=Modify my password
 views.users.profile.myProfile=My profile
 
 views.visitors.home=This is the first page

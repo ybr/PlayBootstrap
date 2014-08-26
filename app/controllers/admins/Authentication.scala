@@ -13,6 +13,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import playground.form.Mappings._
 
 import services._
+import App.Daos._
 
 object Authentication extends Controller {
   val signinForm = Form(tuple(
