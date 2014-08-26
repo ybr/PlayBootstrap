@@ -1,0 +1,6 @@
+@(msg: Option[String] = None)(implicit maybeMe: Option[User], flash: Flash, lang: Lang)
+
+@main("Oops") {
+  <h1>Messages("error.unexpected")</h1>
+  <div class="oops">@msg.getOrElse(Messages("error.unexpected"))</div>
+}

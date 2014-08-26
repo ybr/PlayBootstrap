@@ -1,0 +1,23 @@
+@(createdAdmin: Admin, login: String, password: Password, maybeCreator: Option[Admin])(implicit lang: Lang)
+
+<html>
+<head>
+  <title>@Messages("emails.admins.create.subject")</title>
+</head>
+<body>
+  <header>@Messages("emails.admins.create.header", createdAdmin | fullname)</header>
+  @maybeCreator.map { creator =>
+    <p>@Messages("emails.admins.create.created", creator | fullname)</p>
+  }
+  <p>
+    @Messages("emails.admins.create.credentials")
+    <dl>
+      <dt>@Messages("login")</dt>
+      <dd>@login</dd>
+      <dt>@Messages("password")</dt>
+      <dd>@{password.neverLog(identity)}</dd>
+    </dl>
+  </p>
+  <footer>@Messages("emails.admins.create.footer")</footer>
+</body>
+</html>

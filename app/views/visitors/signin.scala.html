@@ -1,0 +1,14 @@
+@(form: Form[(String, Password)])(implicit maybeMe: Option[User], flash: Flash, lang: Lang)
+
+@main(Messages("signin")) {
+  <h1>@Messages("signin")</h1>
+  <a href="@routes.Visitors.signup">@Messages("signup")</a>
+  @helper.form(routes.Authentication.authenticate()) {
+    <fieldset>
+      <legend>@Messages("signin")</legend>
+      @helper.inputText(form("email"))
+      @helper.inputPassword(form("password"))
+    </fieldset>
+    <button>@Messages("signin")</button>
+  }
+}

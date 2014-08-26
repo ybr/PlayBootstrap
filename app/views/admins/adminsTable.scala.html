@@ -1,0 +1,31 @@
+@(admins: Seq[Admin])(implicit me: Admin, flash: Flash, lang: Lang)
+
+@main(Messages("views.admins.adminsTable.list")) {
+  <h1>@Messages("views.admins.adminsTable.list")</h1>
+  <a href="@controllers.admins.routes.Admins.createGet()">@Messages("views.admins.adminsTable.createAdmin")</a>
+  <table>
+    <caption>@Messages("views.admins.adminsTable.list")</caption>
+    <thead>
+      <tr>
+        <th>@Messages("id")</th>
+        <th>@Messages("firstname")</th>
+        <th>@Messages("lastname")</th>
+        <th>@Messages("email")</th>
+        <th>@Messages("active")</th>
+        <th>@Messages("creationDate")</th>
+      </tr>
+    </thead>
+    <tbody>
+      @admins.map { admin =>
+      <tr>
+        <td><a href="@controllers.admins.routes.Admins.details(admin.id)">@{admin.id | id}</a></td>
+        <td>@admin.firstName</td>
+        <td>@admin.lastName</td>
+        <td>@admin.email</td>
+        <td>@{admin.active | bool}</td>
+        <td>@{admin.creation | datetime.short}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+}

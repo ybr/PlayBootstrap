@@ -1,0 +1,16 @@
+@(form: Form[Users.UpdateForm])(implicit me: User, flash: Flash, lang: Lang)
+
+@main(Messages("views.users.profile.myProfile")) {
+  <h1>@Messages("views.users.profile.myProfile")</h1>
+
+  @helper.form(routes.Users.profileUpdate) {
+    <fieldset>
+      <legend>@Messages("profile")</legend>
+      @helper.inputText(form("firstname"))
+      @helper.inputText(form("lastname"))
+      @helper.inputText(form("email"))
+    </fieldset>
+    <a href="@routes.Users.home" rel="prev">@Messages("back")</a>
+    <button type="submit">@Messages("update")</button>
+  }
+}

@@ -1,0 +1,33 @@
+@(title: String)(content: Html)(implicit maybeMe: Option[Admin], flash: Flash, lang: Lang)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@Messages("views.admins.mainMaybeAdmin", title)</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+    </head>
+    <body>
+        @maybeMe.map { me =>
+        <header>
+          <nav>
+            <ul>
+              <li class="brand"><a href="@controllers.admins.routes.Admins.home">@Messages("home")</a></li>
+              <li><a href="@controllers.admins.routes.Users.all">@Messages("users")</a></li>
+              <li><a href="@controllers.admins.routes.Admins.all">@Messages("admins")</a></li>
+              <li class="profile"><a href="@controllers.admins.routes.Admins.home">@me.firstName</a></li>
+              <li class="signout"><a href="@controllers.admins.routes.Authentication.signout">@Messages("signout")</a></li>
+            </ul>
+          </nav>
+        </header>
+        }
+        @flash.data.toList.map { t =>
+        <div class="flash @t._1">@t._2</div>
+        }
+        @content
+    </body>
+    <footer>
+    @locale()
+    </footer>
+</html>

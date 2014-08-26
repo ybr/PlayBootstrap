@@ -1,0 +1,21 @@
+@(createdUser: User, login: String, password: Password)(implicit lang: Lang)
+
+<html>
+<head>
+  <title>@Messages("emails.users.create.subject")</title>
+</head>
+<body>
+  <header>@Messages("emails.users.create.header", createdUser | fullname)</header>
+  <p>@Messages("emails.users.create.created")</p>
+  <p>
+    @Messages("emails.users.create.credentials")
+    <dl>
+      <dt>@Messages("login")</dt>
+      <dd>@login</dd>
+      <dt>@Messages("password")</dt>
+      <dd>@{password.neverLog(identity)}</dd>
+    </dl>
+  </p>
+  <footer>@Messages("emails.users.create.footer")</footer>
+</body>
+</html>

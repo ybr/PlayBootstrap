@@ -1,0 +1,26 @@
+@(login: String)(implicit me: User, flash: Flash, lang: Lang)
+
+@main(Messages("views.users.home.yourArea")) {
+  <h1>@Messages("views.users.home.yourArea")</h1>
+
+  <section>
+    <h2>@Messages("views.users.home.yourProfile")</h2>
+    <dl>
+      <dt>@Messages("firstname")</dt>
+      <dd>@{me.firstName}</dd>
+      <dt>@Messages("lastname")</dt>
+      <dd>@{me.lastName}</dd>
+      <dt>@Messages("email")</dt>
+      <dd>@{me.email}</dd>
+    </dl>
+    <a href="@routes.Users.profile">@Messages("views.users.home.modifyProfile")</a>
+  </section>
+
+  <section>
+    <h2>@Messages("credentials")</h2>
+    <dl>
+      <dt>@Messages("login")</dt>
+      <dd>@{login}</dd>
+    </dl>
+  </section>
+}

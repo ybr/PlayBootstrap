@@ -1,0 +1,6 @@
+@(msg: Option[String])(implicit me: Admin, flash: Flash, lang: Lang)
+
+@main(Messages("oops")) {
+  <h1>@Messages("error.unexpected")</h1>
+  <p class="error">@msg.getOrElse(Messages("error.unexpected"))</p>
+}

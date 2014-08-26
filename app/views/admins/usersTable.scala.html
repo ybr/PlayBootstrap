@@ -1,0 +1,36 @@
+@(users: Seq[User])(implicit me: Admin, flash: Flash, lang: Lang)
+
+@main(Messages("views.admins.usersTable.list")) {
+  <h1>@Messages("views.admins.usersTable.list")</h1>
+  <table>
+    <caption>@Messages("views.admins.usersTable.list")</caption>
+    <thead>
+      <tr>
+        <th>@Messages("id")</th>
+        <th>@Messages("firstname")</th>
+        <th>@Messages("lastname")</th>
+        <th>@Messages("email")</th>
+        <th>@Messages("active")</th>
+        <th>@Messages("creationDate")</th>
+      </tr>
+    </thead>
+    <tbody>
+      @if(users.length == 0) {
+      <tr>
+        <td colspan="5">@Messages("views.admins.usersTable.noUser")</td>
+      </tr>
+      } else {
+        @users.map { user =>
+        <tr>
+          <td><a href="@controllers.admins.routes.Users.details(user.id)">@{user.id | id}</a></td>
+          <td>@user.firstName</td>
+          <td>@user.lastName</td>
+          <td>@user.email</td>
+          <td>@{user.active | bool}</td>
+          <td>@{user.creation | datetime.short}</td>
+        </tr>
+        }
+      }
+    </tbody>
+  </table>
+}

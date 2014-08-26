@@ -1,0 +1,18 @@
+@(form: Form[(String, String, String, Password)])(implicit me: Admin, flash: Flash, lang: Lang)
+
+@main(Messages("views.admins.adminCreate")) {
+  <h1>@Messages("views.admins.adminCreate")</h1>
+  @helper.form(controllers.admins.routes.Admins.create) {
+  <fieldset>
+      <legend>@Messages("profile")</legend>
+      @helper.inputText(form("firstname"))
+      @helper.inputText(form("lastname"))
+    </fieldset>
+    <fieldset>
+      <legend>@Messages("credentials")</legend>
+      @helper.inputText(form("email"))
+      @helper.inputPassword(form("password"))
+    </fieldset>
+    <button>@Messages("create")</button>
+  }
+}
